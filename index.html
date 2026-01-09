@@ -3,168 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Dashboard | elbowroomx</title>
+    <title>world-dashboard concept by elbowroomx</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0a; --card: #141414; --border: #262626;
-            --text: #ffffff; --dim: #a0a0a0; --accent: #ffffff;
+            --bg-color: #0a0a0a;
+            --card-bg: #141414;
+            --accent-color: #00ff88;
+            --text-color: #e0e0e0;
+            --border-color: #333;
         }
-        * { box-sizing: border-box; }
-        body { 
-            background-color: var(--bg); color: var(--text); 
-            font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 20px;
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
         }
-        
-        /* Header Title */
-        .title { 
-            font-size: 14px; font-weight: 700; text-transform: lowercase; 
-            letter-spacing: 1px; margin-bottom: 30px; color: var(--dim);
+
+        h1 {
+            text-align: center;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            color: var(--accent-color);
         }
 
         /* Tidy Grid Layout */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            grid-auto-rows: minmax(180px, auto);
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto;
             gap: 15px;
-            max-width: 1800px; margin: 0 auto;
+            max-width: 1600px;
+            margin: 0 auto;
         }
 
-        .card { 
-            background: var(--card); border: 1px solid var(--border); 
-            border-radius: 4px; padding: 15px; display: flex; flex-direction: column;
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
         }
-        .card-header { 
-            font-size: 11px; font-weight: 700; color: var(--dim); 
-            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+
+        .card-header {
+            padding: 10px 15px;
+            background: #1d1d1d;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
         }
 
-        /* Sizing */
-        .span-8 { grid-column: span 8; }
-        .span-4 { grid-column: span 4; }
-        .span-3 { grid-column: span 3; }
-        .span-6 { grid-column: span 6; }
-        .tall { grid-row: span 3; }
-        .mid { grid-row: span 2; }
+        /* Large Components */
+        .span-2 { grid-column: span 2; }
+        .tall { height: 815px; } /* Spans two rows roughly */
 
-        .widget-container { flex-grow: 1; width: 100%; height: 100%; }
-        iframe { border: none; width: 100%; height: 100%; }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
 
-        @media (max-width: 1024px) { .span-8, .span-4, .span-6, .span-3 { grid-column: span 12; } }
+        .widget-container {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .span-2 { grid-column: span 2; }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .span-2 { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="title">world-dashboard concept by elbowroomx</div>
+    <h1>world-dashboard concept by elbowroomx</h1>
 
     <div class="dashboard-grid">
-
-        <div class="card span-8 tall">
-            <div class="card-header">Interactive Market Terminal (Search for IHSG, BMRI, etc.)</div>
-            <div id="flexible_chart" class="widget-container"></div>
-        </div>
-
-        <div class="card span-4 mid">
-            <div class="card-header">IDR Exchange Rates (Real-Time)</div>
+        
+        <div class="card span-2">
+            <div class="card-header"><span>WORLD MAP (SATELLITE)</span><span>LIVE</span></div>
             <div class="widget-container">
-                <div class="tradingview-widget-container">
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-                    {
-                      "symbolsGroups": [{
-                        "name": "Rates",
-                        "symbols": [
-                          {"name": "FX_IDC:USDIDR", "displayName": "1 USD / IDR"},
-                          {"name": "FX_IDC:SGDIDR", "displayName": "1 SGD / IDR"},
-                          {"name": "FX_IDC:GBPIDR", "displayName": "1 GBP / IDR"},
-                          {"name": "FX_IDC:EURIDR", "displayName": "1 EUR / IDR"},
-                          {"name": "FX_IDC:JPYIDR", "displayName": "1 JPY / IDR"},
-                          {"name": "FX_IDC:CHFIDR", "displayName": "1 CHF / IDR"}
-                        ]
-                      }],
-                      "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%"
-                    }
-                    </script>
-                </div>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d158226000!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sid!4v1704800000000!5m2!1sen!2sid&maptype=satellite"></iframe>
             </div>
         </div>
 
-        <div class="card span-4 mid">
-            <div class="card-header">Real-Time Earthquakes (Worldwide)</div>
-            <div class="widget-container">
-                <iframe src="https://www.arcgis.com/apps/Viewer/index.html?appid=fbaa87419a6a42ff9fe102acaf3e2830"></iframe>
+        <div class="card span-2">
+            <div class="card-header"><span>GLOBAL WEATHER FORECAST</span><span>AUTO-UPDATE</span></div>
+            <div class="widget-container" style="padding: 10px;">
+                <a class="weatherwidget-io" href="https://forecast7.com/en/n6d21106d85/jakarta/" data-label_1="JAKARTA" data-label_2="WEATHER" data-theme="pure" data-basecolor="#141414" data-accent="#00ff88" data-textcolor="#e0e0e0">JAKARTA WEATHER</a>
+                <script>
+                !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+                </script>
             </div>
         </div>
 
-        <div class="card span-8 mid">
-            <div class="card-header">Latest Global Intel News</div>
+        <div class="card">
+            <div class="card-header"><span>POLITICS & GLOBAL NEWS</span></div>
             <div class="widget-container">
                 <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
                     {
-                      "feedMode": "all_symbols", "colorTheme": "dark", "isTransparent": true,
-                      "displayMode": "regular", "width": "100%", "height": "100%"
+                    "feedMode": "all_symbols",
+                    "isTransparent": true,
+                    "displayMode": "regular",
+                    "width": "100%",
+                    "height": "100%",
+                    "colorTheme": "dark",
+                    "locale": "en"
                     }
                     </script>
                 </div>
             </div>
         </div>
 
-        <div class="card span-4">
-            <div class="card-header">Commodities Spot Prices</div>
+        <div class="card">
+            <div class="card-header"><span>SCIENCE & TECH</span></div>
             <div class="widget-container">
                 <div class="tradingview-widget-container">
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
                     {
-                      "symbolsGroups": [{
-                        "name": "Energy & Metals",
-                        "symbols": [
-                          {"name": "TVC:GOLD", "displayName": "Gold"},
-                          {"name": "TVC:SILVER", "displayName": "Silver"},
-                          {"name": "TVC:USOIL", "displayName": "WTI Crude Oil"}
-                        ]
-                      }],
-                      "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%"
+                    "feedMode": "market",
+                    "market": "stock",
+                    "isTransparent": true,
+                    "displayMode": "regular",
+                    "width": "100%",
+                    "height": "100%",
+                    "colorTheme": "dark",
+                    "locale": "en"
                     }
                     </script>
                 </div>
             </div>
         </div>
 
-        <div class="card span-12">
-            <div class="card-header">Weather Conditions (Major Hubs)</div>
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <a class="weatherwidget-io" href="https://weatherwidget.io/w/0/jakarta/jakarta-indonesia/" data-label_1="JAKARTA" data-theme="pure" >JAKARTA</a>
-                <a class="weatherwidget-io" href="https://weatherwidget.io/w/0/london/london-uk/" data-label_1="LONDON" data-theme="pure" >LONDON</a>
-                <a class="weatherwidget-io" href="https://weatherwidget.io/w/0/new-york/new-york-ny-usa/" data-label_1="NEW YORK" data-theme="pure" >NEW YORK</a>
-                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
+        <div class="card">
+            <div class="card-header"><span>TRAVELLING & HOSPITALITY</span></div>
+            <div class="widget-container">
+                <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                    {
+                    "feedMode": "symbols",
+                    "symbols": "NYSE:DAL,NASDAQ:EXPE,NASDAQ:BKNG,NYSE:MAR,NYSE:LUV",
+                    "isTransparent": true,
+                    "displayMode": "regular",
+                    "width": "100%",
+                    "height": "100%",
+                    "colorTheme": "dark",
+                    "locale": "en"
+                    }
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><span>CURRENCY EXCHANGE (IDR BASE)</span></div>
+            <div class="widget-container">
+                <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-forex-cross-rates.js" async>
+                    {
+                    "width": "100%",
+                    "height": "100%",
+                    "currencies": ["USD", "EUR", "GBP", "JPY", "AUD", "SGD", "IDR"],
+                    "isTransparent": true,
+                    "colorTheme": "dark",
+                    "locale": "en"
+                    }
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="card span-2 tall">
+            <div class="card-header"><span>SEARCHABLE GLOBAL ASSETS</span><span>ADVANCED CHART</span></div>
+            <div class="widget-container">
+                <div class="tradingview-widget-container" style="height:100%;width:100%">
+                    <div id="tradingview_chart" style="height:100%;width:100%"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script type="text/javascript">
+                    new TradingView.widget({
+                        "autosize": true,
+                        "symbol": "NASDAQ:AAPL",
+                        "interval": "D",
+                        "timezone": "Etc/UTC",
+                        "theme": "dark",
+                        "style": "1",
+                        "locale": "en",
+                        "toolbar_bg": "#f1f3f6",
+                        "enable_publishing": false,
+                        "hide_side_toolbar": false,
+                        "allow_symbol_change": true,
+                        "container_id": "tradingview_chart"
+                    });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="card span-2 tall">
+            <div class="card-header"><span>LIVE EARTHQUAKE MONITOR (USGS)</span><span>REAL-TIME</span></div>
+            <div class="widget-container">
+                <iframe src="https://earthquake.usgs.gov/earthquakes/map/?extent=-89.0,-179.0&extent=89.0,179.0&list=false&settings=false"></iframe>
             </div>
         </div>
 
     </div>
 
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script type="text/javascript">
-      // This is the "Advanced" widget. It has the search bar in the top-left!
-      new TradingView.widget({
-        "container_id": "flexible_chart",
-        "autosize": true,
-        "symbol": "IDX:COMPOSITE",
-        "interval": "D",
-        "timezone": "Asia/Jakarta",
-        "theme": "dark",
-        "style": "1",
-        "locale": "en",
-        "toolbar_bg": "#f1f3f6",
-        "enable_publishing": false,
-        "withdateranges": true,
-        "hide_side_toolbar": false,
-        "allow_symbol_change": true, // THIS ENABLES FLEXIBILITY
-        "save_image": false,
-        "details": true,
-        "hotlist": true
-      });
-    </script>
 </body>
 </html>
