@@ -3,86 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Intelligence Dashboard</title>
+    <title>Global Intel | Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; margin: 0; padding: 10px; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 10px; overflow: hidden; height: 450px; }
-        .card-header { font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #58a6ff; text-transform: uppercase; border-bottom: 1px solid #30363d; padding-bottom: 5px; }
-        .ticker { margin-bottom: 15px; }
-        iframe { border: none; width: 100%; height: 100%; }
+        :root {
+            --bg: #050505; --card: #111111; --border: #222222;
+            --accent: #ffffff; --text: #e0e0e0; --dim: #888888;
+        }
+        body { 
+            background-color: var(--bg); color: var(--text); 
+            font-family: 'Space Grotesk', sans-serif; margin: 0; overflow-x: hidden;
+        }
+        /* Navigation Tabs */
+        nav { 
+            display: flex; gap: 20px; padding: 20px; border-bottom: 1px solid var(--border);
+            background: var(--bg); sticky; top: 0; z-index: 100; justify-content: center;
+        }
+        nav button {
+            background: none; border: none; color: var(--dim); 
+            font-family: 'Space Grotesk'; font-size: 14px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        nav button:hover, nav button.active { color: var(--accent); border-bottom: 1px solid var(--accent); }
+
+        .tab-content { display: none; padding: 20px; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .full-width { grid-column: 1 / -1; height: 600px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 15px; height: 500px; }
+        .card-title { font-size: 12px; color: var(--dim); margin-bottom: 15px; text-transform: uppercase; }
+
+        iframe { border: none; width: 100%; height: 100%; filter: invert(90%) hue-rotate(180deg) brightness(0.8); }
+        .no-invert { filter: none !important; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="ticker">
-        <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-            {
-            "symbols": [
-                {"proName": "FOREXCOM:SPXUSD", "title": "S&P 500"},
-                {"proName": "IDX:COMPOSITE", "title": "IHSG (Indonesia)"},
-                {"proName": "TVC:GOLD", "title": "Gold"},
-                {"proName": "TVC:SILVER", "title": "Silver"},
-                {"proName": "TVC:USOIL", "title": "Crude Oil"},
-                {"description": "USD/IDR", "proName": "FX_IDC:USDIDR"}
-            ],
-            "showSymbolLogo": true, "colorTheme": "dark", "isTransparent": true, "displayMode": "adaptive", "locale": "en"
-            }
+<nav id="mainNav">
+    <button onclick="openTab('overview')" class="active">World Map</button>
+    <button onclick="openTab('stocks')">Global Stocks</button>
+    <button onclick="openTab('ihsg')">IHSG (Indo)</button>
+    <button onclick="openTab('commodities')">Commodities</button>
+    <button onclick="openTab('forex')">Currencies</button>
+    <button onclick="openTab('news')">News</button>
+    <button onclick="openTab('weather')">Weather</button>
+</nav>
+
+<div id="overview" class="tab-content active">
+    <div class="grid">
+        <div class="card full-width">
+            <div class="card-title">Interactive Geopolitics & Earthquake Map</div>
+            <iframe class="no-invert" src="https://www.google.com/maps/d/embed?mid=180vYEDmS1S_SOfuVAm9nnK6XF_I&ehbc=2E312F"></iframe>
+        </div>
+    </div>
+</div>
+
+<div id="stocks" class="tab-content">
+    <div class="grid">
+        <div class="card full-width no-invert">
+            <div class="card-title">S&P 500 Performance</div>
+            <div id="tradingview_global" style="height: calc(100% - 20px);"></div>
+        </div>
+    </div>
+</div>
+
+<div id="ihsg" class="tab-content">
+    <div class="grid">
+        <div class="card full-width no-invert">
+            <div class="card-title">IHSG (Composite Index) - Candle Chart</div>
+            <div id="tradingview_ihsg" style="height: calc(100% - 20px);"></div>
+        </div>
+        <div class="card no-invert">
+            <div class="card-title">Top Indo Stocks</div>
+            <div class="tradingview-widget-container">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+                {"symbolsGroups": [{"name": "Indonesia", "symbols": [{"name": "IDX:BBCA"},{"name": "IDX:BBRI"},{"name": "IDX:TLKM"},{"name": "IDX:ASII"}]}], "colorTheme": "dark", "width": "100%", "height": "100%"}
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="commodities" class="tab-content">
+    <div class="grid">
+        <div class="card no-invert"><div id="tv_gold" style="height:100%"></div></div>
+        <div class="card no-invert"><div id="tv_oil" style="height:100%"></div></div>
+    </div>
+</div>
+
+<div id="forex" class="tab-content">
+    <div class="grid">
+        <div class="card full-width no-invert">
+            <div class="card-title">Exchange Rates (vs IDR)</div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-forex-cross-rates.js" async>
+            {"currencies": ["USD","EUR","GBP","JPY","CHF","SGD"],"isTransparent": true,"colorTheme": "dark","width": "100%","height": "100%","indexWithSymbol": "IDX:USDIDR"}
             </script>
         </div>
     </div>
+</div>
 
-    <div class="grid-container">
-        <div class="card">
-            <div class="card-header">World News & Geopolitics</div>
-            <div class="tradingview-widget-container">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                {
-                "feedMode": "all_symbols", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "100%", "locale": "en"
-                }
-                </script>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">Indonesia Market (IDX)</div>
-            <div class="tradingview-widget-container">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-                {
-                "symbolsGroups": [
-                    { "name": "Indonesia", "symbols": [
-                        {"name": "IDX:COMPOSITE", "displayName": "IHSG"},
-                        {"name": "IDX:BBCA", "displayName": "BCA"},
-                        {"name": "IDX:TLKM", "displayName": "Telkom"},
-                        {"name": "IDX:ASII", "displayName": "Astra"}
-                    ]}
-                ], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en"
-                }
-                </script>
-            </div>
-        </div>
-
-        <div class="card" style="grid-column: span 1; height: 450px;">
-            <div class="card-header">Real-time Earthquakes (USGS Data)</div>
-            <iframe src="https://earthquake.usgs.gov/earthquakes/map/?extent=-38.27269,-26.71875&extent=77.5421,213.75&list=false"></iframe>
-        </div>
-
-        <div class="card">
-            <div class="card-header">Commodities Analysis</div>
-            <div class="tradingview-widget-container">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-                {
-                "interval": "1D", "width": "100%", "isTransparent": true, "height": "100%", "symbol": "TVC:GOLD", "showIntervalTabs": true, "locale": "en", "colorTheme": "dark"
-                }
-                </script>
-            </div>
+<div id="news" class="tab-content">
+    <div class="grid">
+        <div class="card full-width no-invert">
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+            {"feedMode": "all_symbols","colorTheme": "dark","displayMode": "regular","width": "100%","height": "100%"}
+            </script>
         </div>
     </div>
+</div>
+
+<div id="weather" class="tab-content">
+    <div class="grid">
+        <div class="card"><iframe class="no-invert" src="https://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/04n.png" style="display:none;"></iframe>
+            <a class="weatherwidget-io" href="https://weatherwidget.io/w/0/jakarta/jakarta-indonesia/" data-label_1="JAKARTA" data-theme="pure" >JAKARTA</a>
+            <a class="weatherwidget-io" href="https://weatherwidget.io/w/0/london/london-uk/" data-label_1="LONDON" data-theme="pure" >LONDON</a>
+            <a class="weatherwidget-io" href="https://weatherwidget.io/w/0/new-york/new-york-ny-usa/" data-label_1="NEW YORK" data-theme="pure" >NEW YORK</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+    function openTab(tabName) {
+        var i, content, tabs;
+        content = document.getElementsByClassName("tab-content");
+        for (i = 0; i < content.length; i++) { content[i].classList.remove("active"); }
+        tabs = document.querySelectorAll("#mainNav button");
+        for (i = 0; i < tabs.length; i++) { tabs[i].classList.remove("active"); }
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+    }
+
+    // Initialize Charts
+    new TradingView.widget({"container_id": "tradingview_global","width": "100%","height": "100%","symbol": "SPY","interval": "D","timezone": "Etc/UTC","theme": "dark","style": "1","toolbar_bg": "#f1f3f6","enable_publishing": false,"hide_top_toolbar": true,"save_image": false});
+    new TradingView.widget({"container_id": "tradingview_ihsg","width": "100%","height": "100%","symbol": "IDX:COMPOSITE","interval": "D","theme": "dark","style": "1","hide_top_toolbar": true});
+    new TradingView.widget({"container_id": "tv_gold","width": "100%","height": "100%","symbol": "GOLD","interval": "D","theme": "dark","style": "1","hide_top_toolbar": true});
+    new TradingView.widget({"container_id": "tv_oil","width": "100%","height": "100%","symbol": "USOIL","interval": "D","theme": "dark","style": "1","hide_top_toolbar": true});
+</script>
 
 </body>
 </html>
