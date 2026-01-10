@@ -100,7 +100,6 @@
                         {"name": "FX_IDC:SGDIDR", "displayName": "SGD/IDR"},
                         {"name": "FX_IDC:GBPIDR", "displayName": "GBP/IDR"},
                         {"name": "FX_IDC:EURIDR", "displayName": "EUR/IDR"},
-                        {"name": "FX_IDC:CHFIDR", "displayName": "CHF/IDR"},
                         {"name": "FX_IDC:JPYIDR", "displayName": "JPY/IDR"}
                     ]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%" }
                     </script>
@@ -158,7 +157,7 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        // --- 1. CLOCKS (Now with Tokyo) ---
+        // --- 1. CLOCKS (Jakarta, Tokyo, London, NYC) ---
         function updateClocks() {
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
             const zones = [
@@ -196,7 +195,7 @@
             "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart"
         });
 
-        // --- 4. NEWS FEEDS ---
+        // --- 4. NEWS FEEDS (Travel Fix: Guardian) ---
         async function getNews(url, id, label) {
             const container = document.getElementById(id);
             try {
@@ -215,13 +214,14 @@
                     container.innerHTML = html;
                 } else { throw new Error('Proxy Error'); }
             } catch (err) {
-                container.innerHTML = `<div style="color: #ff4444; font-size: 10px; padding: 10px;">CONNECTION TIMEOUT // RETRYING...</div>`;
+                container.innerHTML = `<div style="color: #ff4444; font-size: 10px; padding: 10px;">SYNC ERROR // RETRYING...</div>`;
             }
         }
 
         getNews('https://www.theguardian.com/world/rss', 'geo-news', 'Guardian');
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
-        getNews('http://feeds.bbci.co.uk/news/business/tourism/rss.xml', 'travel-news', 'BBC Travel');
+        // Swapped to Guardian Travel for HTTPS stability
+        getNews('https://www.theguardian.com/travel/rss', 'travel-news', 'Guardian Travel');
     </script>
 </body>
 </html>
