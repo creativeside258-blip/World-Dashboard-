@@ -18,25 +18,37 @@
             font-size: 12px; overflow-x: hidden;
         }
 
-        /* Tactical Header */
+        /* Tactical Header - Stackable for Mobile */
         .header {
             display: flex; justify-content: space-between; align-items: flex-end;
             padding-bottom: 15px; border-bottom: 1px solid var(--border); margin-bottom: 15px;
+            flex-wrap: wrap; gap: 15px;
         }
         .header-left { display: flex; flex-direction: column; gap: 5px; }
         .header-title { font-weight: 700; text-transform: lowercase; color: var(--dim); letter-spacing: 1px; }
         .status-pill { background: #003311; color: var(--accent); padding: 2px 8px; border-radius: 2px; font-size: 10px; font-weight: 700; width: fit-content; }
         
-        .header-clocks { display: flex; gap: 25px; }
-        .clock-unit { display: flex; flex-direction: column; align-items: flex-end; }
+        .header-clocks { display: flex; gap: 20px; flex-wrap: wrap; }
+        .clock-unit { display: flex; flex-direction: column; align-items: flex-start; }
         .clock-label { color: var(--dim); font-size: 9px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
         .clock-time { color: var(--accent); font-family: monospace; font-size: 14px; }
 
-        /* Dashboard Grid */
+        /* Dashboard Grid - RESPONSIVE SETUP */
         .grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, 1fr); /* Default 4 columns */
             gap: 12px;
+        }
+
+        /* Mobile Adjustments (iPhone/Android) */
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: repeat(2, 1fr); } /* 2 columns for tablets */
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; } /* 1 column for iPhone */
+            .span-2, .tall { grid-column: span 1 !important; grid-row: span 1 !important; min-height: 350px !important; }
+            .header { align-items: flex-start; }
+            .header-clocks { gap: 10px; }
         }
 
         .panel { 
@@ -74,21 +86,9 @@
     </div>
 
     <div class="grid">
-
-        <div class="panel">
-            <div class="panel-header">Geopolitics / World</div>
-            <div class="content scroll-list" id="geo-news">Syncing Feed...</div>
-        </div>
-
-        <div class="panel">
-            <div class="panel-header">Technology / Science</div>
-            <div class="content scroll-list" id="tech-news">Syncing Feed...</div>
-        </div>
-
-        <div class="panel">
-            <div class="panel-header">Travel / Hospitality</div>
-            <div class="content scroll-list" id="travel-news">Syncing Feed...</div>
-        </div>
+        <div class="panel"><div class="panel-header">Geopolitics / World</div><div class="content scroll-list" id="geo-news">Syncing Feed...</div></div>
+        <div class="panel"><div class="panel-header">Technology / Science</div><div class="content scroll-list" id="tech-news">Syncing Feed...</div></div>
+        <div class="panel"><div class="panel-header">Travel / Hospitality</div><div class="content scroll-list" id="travel-news">Syncing Feed...</div></div>
 
         <div class="panel">
             <div class="panel-header">Market: IDR Rates</div>
@@ -107,21 +107,12 @@
             </div>
         </div>
 
-        <div class="panel span-2 tall">
-            <div class="panel-header">Global Activity Monitor (Seismic Activity)</div>
-            <div class="content" id="map"></div>
-        </div>
-
-        <div class="panel span-2 tall">
-            <div class="panel-header">Interactive Terminal (Search Symbol: IHSG, BMRI)</div>
-            <div class="content" id="tradingview_chart"></div>
-        </div>
+        <div class="panel span-2 tall"><div class="panel-header">Global Activity Monitor</div><div class="content" id="map"></div></div>
+        <div class="panel span-2 tall"><div class="panel-header">Interactive Terminal</div><div class="content" id="tradingview_chart"></div></div>
 
         <div class="panel">
-            <div class="panel-header">Weather Hub (Regional)</div>
-            <div class="content">
-                <iframe src="https://www.meteoblue.com/en/weather/widget/three/jakarta_indonesia_1642911?geoloc=fixed&nocurrent=0&nooo=1&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&layout=dark"></iframe>
-            </div>
+            <div class="panel-header">Weather Hub</div>
+            <div class="content"><iframe src="https://www.meteoblue.com/en/weather/widget/three/jakarta_indonesia_1642911?geoloc=fixed&nocurrent=0&nooo=1&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&layout=dark"></iframe></div>
         </div>
 
         <div class="panel">
@@ -141,7 +132,7 @@
         </div>
 
         <div class="panel span-2">
-            <div class="panel-header">Market Heatmap (Global Geopolitical Exposure)</div>
+            <div class="panel-header">Market Heatmap</div>
             <div class="content">
                 <div class="tradingview-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
@@ -150,22 +141,16 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        // --- 1. CLOCKS (Jakarta, Tokyo, London, NYC) ---
+        // --- 1. CLOCKS ---
         function updateClocks() {
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            const zones = [
-                { label: 'Jakarta', zone: 'Asia/Jakarta' },
-                { label: 'Tokyo', zone: 'Asia/Tokyo' },
-                { label: 'London', zone: 'Europe/London' },
-                { label: 'New York', zone: 'America/New_York' }
-            ];
+            const zones = [{ label: 'JKT', zone: 'Asia/Jakarta' }, { label: 'TYO', zone: 'Asia/Tokyo' }, { label: 'LDN', zone: 'Europe/London' }, { label: 'NYC', zone: 'America/New_York' }];
             let html = '';
             zones.forEach(z => {
                 const time = new Intl.DateTimeFormat('en-GB', { ...options, timeZone: z.zone }).format(new Date());
@@ -173,54 +158,33 @@
             });
             document.getElementById('clocks').innerHTML = html;
         }
-        setInterval(updateClocks, 1000);
-        updateClocks();
+        setInterval(updateClocks, 1000); updateClocks();
 
         // --- 2. MAP ---
         var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([0, 115], 3);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-        fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson')
-            .then(res => res.json()).then(data => {
-                L.geoJSON(data, {
-                    pointToLayer: (feat, latlng) => L.circleMarker(latlng, {
-                        radius: feat.properties.mag * 2, fillColor: feat.properties.mag > 5 ? "#ff4444" : "#00ff88",
-                        color: "#000", weight: 1, fillOpacity: 0.8
-                    }).bindPopup(`<b>Mag: ${feat.properties.mag}</b><br>${feat.properties.place}`)
-                }).addTo(map);
-            });
-
-        // --- 3. CHART ---
-        new TradingView.widget({
-            "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta",
-            "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart"
+        fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson').then(res => res.json()).then(data => {
+            L.geoJSON(data, { pointToLayer: (feat, latlng) => L.circleMarker(latlng, { radius: feat.properties.mag * 2, fillColor: feat.properties.mag > 5 ? "#ff4444" : "#00ff88", color: "#000", weight: 1, fillOpacity: 0.8 }).bindPopup(`Mag: ${feat.properties.mag}`) }).addTo(map);
         });
 
-        // --- 4. NEWS FEEDS (Travel Fix: Guardian) ---
+        // --- 3. CHART ---
+        new TradingView.widget({ "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta", "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart" });
+
+        // --- 4. NEWS ---
         async function getNews(url, id, label) {
             const container = document.getElementById(id);
             try {
                 const api = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
-                const response = await fetch(api);
-                const data = await response.json();
-                
+                const response = await fetch(api); const data = await response.json();
                 if (data.status === 'ok') {
                     let html = '';
-                    data.items.slice(0, 6).forEach(item => {
-                        html += `<div class="news-item">
-                            <div class="news-meta"><span>${label}</span><span>${new Date(item.pubDate).getHours()}:00</span></div>
-                            <a href="${item.link}" target="_blank">${item.title}</a>
-                        </div>`;
-                    });
+                    data.items.slice(0, 6).forEach(item => { html += `<div class="news-item"><div class="news-meta"><span>${label}</span><span>${new Date(item.pubDate).getHours()}:00</span></div><a href="${item.link}" target="_blank">${item.title}</a></div>`; });
                     container.innerHTML = html;
-                } else { throw new Error('Proxy Error'); }
-            } catch (err) {
-                container.innerHTML = `<div style="color: #ff4444; font-size: 10px; padding: 10px;">SYNC ERROR // RETRYING...</div>`;
-            }
+                }
+            } catch (err) { container.innerHTML = `<div style="color: #ff4444; font-size: 10px; padding: 10px;">SYNC ERROR</div>`; }
         }
-
         getNews('https://www.theguardian.com/world/rss', 'geo-news', 'Guardian');
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
-        // Swapped to Guardian Travel for HTTPS stability
         getNews('https://www.theguardian.com/travel/rss', 'travel-news', 'Guardian Travel');
     </script>
 </body>
