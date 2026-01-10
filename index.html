@@ -157,13 +157,13 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        // --- 1. CLOCKS ---
+        // --- 1. CLOCKS (Now with Tokyo) ---
         function updateClocks() {
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
             const zones = [
                 { label: 'Jakarta', zone: 'Asia/Jakarta' },
-                { label: 'London', zone: 'Europe/London' },
                 { label: 'Tokyo', zone: 'Asia/Tokyo' },
+                { label: 'London', zone: 'Europe/London' },
                 { label: 'New York', zone: 'America/New_York' }
             ];
             let html = '';
@@ -176,7 +176,7 @@
         setInterval(updateClocks, 1000);
         updateClocks();
 
-        // --- 2. MAP (Leaflet) ---
+        // --- 2. MAP ---
         var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([0, 115], 3);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
         fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson')
@@ -195,7 +195,7 @@
             "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart"
         });
 
-        // --- 4. FIXED NEWS (BBC + Guardian) ---
+        // --- 4. NEWS FEEDS ---
         async function getNews(url, id, label) {
             const container = document.getElementById(id);
             try {
@@ -220,7 +220,6 @@
 
         getNews('https://www.theguardian.com/world/rss', 'geo-news', 'Guardian');
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
-        // Swapped to BBC Business-Tourism for maximum stability
         getNews('http://feeds.bbci.co.uk/news/business/tourism/rss.xml', 'travel-news', 'BBC Travel');
     </script>
 </body>
