@@ -18,7 +18,7 @@
             font-size: 12px; overflow-x: hidden;
         }
 
-        /* Header with Live Clocks */
+        /* Tactical Header */
         .header {
             display: flex; justify-content: space-between; align-items: flex-end;
             padding-bottom: 15px; border-bottom: 1px solid var(--border); margin-bottom: 15px;
@@ -37,7 +37,6 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            height: auto;
         }
 
         .panel { 
@@ -59,10 +58,9 @@
         /* News & List Styling */
         .scroll-list { padding: 12px; overflow-y: auto; height: 100%; }
         .news-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #141414; }
-        .news-item a { color: #eee; text-decoration: none; font-size: 11.5px; line-height: 1.5; display: block; font-weight: 400; }
+        .news-item a { color: #eee; text-decoration: none; font-size: 11.5px; line-height: 1.5; display: block; }
         .news-item a:hover { color: var(--accent); }
         .news-meta { font-size: 9px; color: var(--dim); text-transform: uppercase; margin-bottom: 4px; display: flex; justify-content: space-between; }
-
     </style>
 </head>
 <body>
@@ -72,25 +70,24 @@
             <div class="header-title">world-dashboard concept by elbowroomx</div>
             <div class="status-pill">SYSTEM ONLINE // DATA SYNC ACTIVE</div>
         </div>
-        <div class="header-clocks" id="clocks">
-            </div>
+        <div class="header-clocks" id="clocks"></div>
     </div>
 
     <div class="grid">
 
         <div class="panel">
             <div class="panel-header">Geopolitics / World</div>
-            <div class="content scroll-list" id="geo-news">Loading...</div>
+            <div class="content scroll-list" id="geo-news">Syncing Feed...</div>
         </div>
 
         <div class="panel">
             <div class="panel-header">Technology / Science</div>
-            <div class="content scroll-list" id="tech-news">Loading...</div>
+            <div class="content scroll-list" id="tech-news">Syncing Feed...</div>
         </div>
 
         <div class="panel">
             <div class="panel-header">Travel / Hospitality</div>
-            <div class="content scroll-list" id="travel-news">Loading...</div>
+            <div class="content scroll-list" id="travel-news">Syncing Feed...</div>
         </div>
 
         <div class="panel">
@@ -116,7 +113,7 @@
         </div>
 
         <div class="panel span-2 tall">
-            <div class="panel-header">Interactive Terminal (IHSG / Search Symbol)</div>
+            <div class="panel-header">Interactive Terminal (Search Symbol: IHSG, BMRI)</div>
             <div class="content" id="tradingview_chart"></div>
         </div>
 
@@ -144,7 +141,7 @@
         </div>
 
         <div class="panel span-2">
-            <div class="panel-header">Market Heatmap (Geopolitical)</div>
+            <div class="panel-header">Market Heatmap (Global Geopolitical Exposure)</div>
             <div class="content">
                 <div class="tradingview-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
@@ -160,7 +157,7 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        // 1. LIVE CLOCKS FUNCTION
+        // --- 1. CLOCKS ---
         function updateClocks() {
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
             const zones = [
@@ -178,7 +175,7 @@
         setInterval(updateClocks, 1000);
         updateClocks();
 
-        // 2. STABLE MAP (Leaflet)
+        // --- 2. MAP (Leaflet) ---
         var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([0, 115], 3);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
         fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson')
@@ -191,29 +188,39 @@
                 }).addTo(map);
             });
 
-        // 3. MARKET TERMINAL
+        // --- 3. CHART ---
         new TradingView.widget({
             "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta",
             "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart"
         });
 
-        // 4. NEWS FEEDS (RSS Proxy)
-        function getNews(url, id, label) {
-            const api = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
-            fetch(api).then(r => r.json()).then(data => {
-                let html = '';
-                data.items.slice(0, 6).forEach(item => {
-                    html += `<div class="news-item">
-                        <div class="news-meta"><span>${label}</span><span>${new Date(item.pubDate).getHours()}:00</span></div>
-                        <a href="${item.link}" target="_blank">${item.title}</a>
-                    </div>`;
-                });
-                document.getElementById(id).innerHTML = html;
-            });
+        // --- 4. FIXED NEWS (BBC + Guardian) ---
+        async function getNews(url, id, label) {
+            const container = document.getElementById(id);
+            try {
+                const api = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
+                const response = await fetch(api);
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    let html = '';
+                    data.items.slice(0, 6).forEach(item => {
+                        html += `<div class="news-item">
+                            <div class="news-meta"><span>${label}</span><span>${new Date(item.pubDate).getHours()}:00</span></div>
+                            <a href="${item.link}" target="_blank">${item.title}</a>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                } else { throw new Error('Proxy Error'); }
+            } catch (err) {
+                container.innerHTML = `<div style="color: #ff4444; font-size: 10px; padding: 10px;">CONNECTION TIMEOUT // RETRYING...</div>`;
+            }
         }
+
         getNews('https://www.theguardian.com/world/rss', 'geo-news', 'Guardian');
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
-        getNews('https://www.travelpulse.com/rss/news', 'travel-news', 'TravelPulse');
+        // Swapped to BBC Business-Tourism for maximum stability
+        getNews('http://feeds.bbci.co.uk/news/business/tourism/rss.xml', 'travel-news', 'BBC Travel');
     </script>
 </body>
 </html>
