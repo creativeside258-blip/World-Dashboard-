@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
-            --bg: #000000; --panel: #0a0a0a; --border: #1a1a1a;
-            --text: #ffffff; --dim: #555; --accent: #00ff88;
+            --bg: #000000; --panel: #0b0b0b; --border: #1f1f1f;
+            --text: #ffffff; --dim: #666; --accent: #00ff88;
             --risk-low: #00ff88; --risk-med: #ffce00; --risk-high: #ff3e3e;
         }
         * { box-sizing: border-box; }
@@ -19,69 +19,93 @@
             font-size: 12px; overflow-x: hidden;
         }
 
-        /* STICKY HEADER */
+        /* HEADER */
         .header {
             display: flex; justify-content: space-between; align-items: flex-end;
             padding: 10px 15px; border-bottom: 1px solid var(--border); margin: -15px -15px 15px -15px;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(5px);
-            position: sticky; top: 0; z-index: 9999;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 999;
             flex-wrap: wrap; gap: 15px;
         }
-        .header-left { display: flex; flex-direction: column; gap: 5px; }
+        .header-left { display: flex; flex-direction: column; gap: 4px; }
         .header-title { font-weight: 700; text-transform: lowercase; color: var(--dim); letter-spacing: 1px; }
         .status-pill { background: #003311; color: var(--accent); padding: 2px 8px; border-radius: 2px; font-size: 10px; font-weight: 700; width: fit-content; }
         
         .header-clocks { display: flex; gap: 20px; flex-wrap: wrap; }
         .clock-unit { display: flex; flex-direction: column; align-items: flex-start; }
-        .clock-label { color: var(--dim); font-size: 9px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .clock-label { color: var(--dim); font-size: 9px; font-weight: 700; letter-spacing: 1px; }
         .clock-time { color: var(--accent); font-family: monospace; font-size: 14px; }
 
-        /* GRID SYSTEM */
+        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-
-        /* MOBILE RESPONSIVE */
-        @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { 
             .grid { grid-template-columns: 1fr; } 
-            .span-2, .tall { grid-column: span 1 !important; grid-row: span 1 !important; min-height: 350px !important; }
+            .span-2, .tall { grid-column: span 1 !important; grid-row: span 1 !important; min-height: 300px !important; }
         }
 
         .panel { 
             background: var(--panel); border: 1px solid var(--border); 
-            display: flex; flex-direction: column; min-height: 320px;
+            display: flex; flex-direction: column; min-height: 280px;
+            position: relative;
         }
         .panel-header {
             background: #111; padding: 8px 12px; font-size: 10px; font-weight: 700;
             text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .span-2 { grid-column: span 2; }
-        .tall { grid-row: span 2; min-height: 652px; }
-        .short { min-height: 200px; }
+        .tall { grid-row: span 2; min-height: 580px; }
+        .short { min-height: 180px; }
 
-        .content { flex-grow: 1; position: relative; width: 100%; height: 100%; overflow: hidden; }
+        .content { flex: 1; position: relative; width: 100%; height: 100%; overflow: hidden; }
         #map { width: 100%; height: 100%; background: #050505; }
         iframe { border: none; width: 100%; height: 100%; }
 
-        /* SCROLL LISTS */
-        .scroll-list { padding: 12px; overflow-y: auto; height: 100%; }
-        .news-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #141414; }
-        .news-item a { color: #eee; text-decoration: none; font-size: 11.5px; line-height: 1.5; display: block; }
-        .news-item a:hover { color: var(--accent); }
-        .news-meta { font-size: 9px; color: var(--dim); text-transform: uppercase; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        /* NEWS LIST */
+        .scroll-list { padding: 0; overflow-y: auto; height: 100%; }
+        .news-item { padding: 12px; border-bottom: 1px solid #1a1a1a; transition: background 0.2s; }
+        .news-item:hover { background: #141414; }
+        .news-item a { color: #e0e0e0; text-decoration: none; font-size: 11.5px; line-height: 1.4; display: block; font-weight: 400; }
+        .news-meta { font-size: 9px; color: var(--dim); margin-bottom: 4px; display: flex; justify-content: space-between; text-transform: uppercase; }
 
-        /* WW3 INDICATOR STYLING */
-        .risk-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center; }
-        .risk-percent { font-size: 48px; font-weight: 700; font-family: monospace; margin-bottom: 10px; }
-        .risk-bar-bg { width: 100%; height: 10px; background: #222; border-radius: 5px; overflow: hidden; }
-        .risk-bar-fill { height: 100%; width: 0%; transition: width 1s ease, background 1s ease; }
-        .risk-label { font-size: 10px; color: var(--dim); margin-top: 15px; letter-spacing: 2px; }
-        
-        /* PREP LIST STYLING */
-        .prep-item { margin-bottom: 8px; font-size: 11px; display: flex; align-items: center; gap: 8px; }
-        .prep-icon { color: var(--dim); }
-        .prep-check { width: 10px; height: 10px; border: 1px solid var(--dim); }
+        /* METER GAUGE (CSS Only) */
+        .gauge-wrapper { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 10px; }
+        .gauge {
+            position: relative; width: 140px; height: 70px; /* Half circle */
+            background: conic-gradient(from 180deg at 50% 100%, var(--risk-low) 0deg 60deg, var(--risk-med) 60deg 120deg, var(--risk-high) 120deg 180deg);
+            border-radius: 140px 140px 0 0;
+            overflow: hidden;
+        }
+        .gauge-inner {
+            position: absolute; bottom: 0; left: 20px; right: 20px; top: 20px;
+            background: var(--panel); border-radius: 140px 140px 0 0;
+            z-index: 1;
+        }
+        .needle {
+            position: absolute; bottom: 0; left: 50%; width: 4px; height: 65px;
+            background: #fff; transform-origin: bottom center;
+            transform: rotate(-90deg); /* Start at -90 (Left) */
+            z-index: 2; transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+        }
+        .risk-text { margin-top: 15px; text-align: center; }
+        .risk-val { font-size: 24px; font-weight: 700; color: #fff; font-family: monospace; }
+        .risk-reason { font-size: 10px; color: var(--dim); margin-top: 5px; max-width: 80%; line-height: 1.3; }
+
+        /* WEATHER (Simple) */
+        .weather-simple { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; }
+        .temp-display { font-size: 32px; font-weight: 700; color: var(--text); }
+        .weather-meta { font-size: 11px; color: var(--dim); margin-top: 5px; text-transform: uppercase; }
+        .weather-icon { font-size: 24px; margin-bottom: 5px; }
+
+        /* PREP LIST */
+        .prep-item { padding: 8px 12px; font-size: 11px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #1a1a1a; }
+        .prep-check { width: 12px; height: 12px; border: 1px solid #444; border-radius: 2px; }
+
     </style>
 </head>
 <body>
@@ -89,7 +113,7 @@
     <div class="header">
         <div class="header-left">
             <div class="header-title">world-dashboard concept by elbowroomx</div>
-            <div class="status-pill">SYSTEM ONLINE // DATA SYNC ACTIVE</div>
+            <div class="status-pill">SYSTEM ONLINE // LIVE FEED</div>
         </div>
         <div class="header-clocks" id="clocks"></div>
     </div>
@@ -97,28 +121,50 @@
     <div class="grid">
         
         <div class="panel short">
-            <div class="panel-header">Conflict Escalation Index (Simulated)</div>
-            <div class="content risk-container">
-                <div class="risk-percent" id="risk-val">--%</div>
-                <div class="risk-bar-bg"><div class="risk-bar-fill" id="risk-fill"></div></div>
-                <div class="risk-label">GLOBAL TENSION PROBABILITY</div>
+            <div class="panel-header">Conflict Index</div>
+            <div class="content gauge-wrapper">
+                <div class="gauge">
+                    <div class="gauge-inner"></div>
+                    <div class="needle" id="risk-needle"></div>
+                </div>
+                <div class="risk-text">
+                    <div class="risk-val" id="risk-val">DEFCON 4</div>
+                    <div class="risk-reason" id="risk-reason">ANALYZING GEOPOLITICAL VECTORS...</div>
+                </div>
             </div>
         </div>
 
         <div class="panel short">
-            <div class="panel-header">Emergency Protocols / Prep</div>
+            <div class="panel-header">Doomsday Prep</div>
             <div class="content scroll-list">
-                <div class="prep-item"><div class="prep-check"></div> 72-Hour Water Supply (4L/Person)</div>
-                <div class="prep-item"><div class="prep-check"></div> Non-Perishable Food (Canned/Dry)</div>
-                <div class="prep-item"><div class="prep-check"></div> Faraday Bag (Electronics Protection)</div>
-                <div class="prep-item"><div class="prep-check"></div> Analog Radio (Shortwave/AM/FM)</div>
-                <div class="prep-item"><div class="prep-check"></div> Cash Reserve (Small Denominations)</div>
-                <div class="prep-item"><div class="prep-check"></div> Passport & Hardcopy Documents</div>
+                <div class="prep-item"><div class="prep-check"></div> 72hr Water Supply (4L/day)</div>
+                <div class="prep-item"><div class="prep-check"></div> Iodine Tablets (Radiation)</div>
+                <div class="prep-item"><div class="prep-check"></div> Analog/Ham Radio</div>
+                <div class="prep-item"><div class="prep-check"></div> Faraday Shielding</div>
+                <div class="prep-item"><div class="prep-check"></div> Hard Cash Reserve</div>
             </div>
         </div>
 
-        <div class="panel span-2 short">
-            <div class="panel-header">Market: Currency Rates</div>
+        <div class="panel short">
+            <div class="panel-header">Jakarta Weather</div>
+            <div class="content weather-simple" id="weather-box">
+                <div style="color: #666;">Connecting Satellite...</div>
+            </div>
+        </div>
+
+        <div class="panel short">
+            <div class="panel-header">Live Intel (Bloomberg)</div>
+            <div class="content">
+                <iframe src="https://www.youtube.com/embed/dp8PhLsUcFE?autoplay=1&mute=1&controls=0&modestbranding=1" allow="autoplay; encrypted-media"></iframe>
+            </div>
+        </div>
+
+        <div class="panel"><div class="panel-header">Geopolitics</div><div class="content scroll-list" id="geo-news">Loading...</div></div>
+        <div class="panel"><div class="panel-header">Tech & Cyber</div><div class="content scroll-list" id="tech-news">Loading...</div></div>
+        <div class="panel"><div class="panel-header">Global Travel</div><div class="content scroll-list" id="travel-news">Loading...</div></div>
+
+        <div class="panel">
+            <div class="panel-header">Currency Rates</div>
             <div class="content">
                 <div class="tradingview-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
@@ -126,47 +172,39 @@
                         {"name": "FX_IDC:USDIDR", "displayName": "USD/IDR"},
                         {"name": "FX_IDC:CHFIDR", "displayName": "CHF/IDR"},
                         {"name": "FX_IDC:SGDIDR", "displayName": "SGD/IDR"},
-                        {"name": "FX_IDC:GBPIDR", "displayName": "GBP/IDR"},
                         {"name": "FX_IDC:EURIDR", "displayName": "EUR/IDR"},
                         {"name": "FX_IDC:JPYIDR", "displayName": "JPY/IDR"}
-                    ]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%" }
+                    ]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en" }
                     </script>
                 </div>
             </div>
         </div>
 
-        <div class="panel"><div class="panel-header">Geopolitics / World</div><div class="content scroll-list" id="geo-news">Syncing Feed...</div></div>
-        <div class="panel"><div class="panel-header">Technology / Science</div><div class="content scroll-list" id="tech-news">Syncing Feed...</div></div>
-        <div class="panel"><div class="panel-header">Travel / Hospitality</div><div class="content scroll-list" id="travel-news">Syncing Feed...</div></div>
+        <div class="panel span-2 tall"><div class="panel-header">Global Activity Monitor</div><div class="content" id="map"></div></div>
+        <div class="panel span-2 tall"><div class="panel-header">Market Terminal</div><div class="content" id="tradingview_chart"></div></div>
+
         <div class="panel">
-             <div class="panel-header">Commodities Spot</div>
+             <div class="panel-header">Commodities</div>
              <div class="content">
                 <div class="tradingview-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
                     { "symbolsGroups": [{"name": "Commodities","symbols": [
-                        {"name": "TVC:GOLD", "displayName": "Gold Spot"},
-                        {"name": "TVC:SILVER", "displayName": "Silver Spot"},
-                        {"name": "TVC:USOIL", "displayName": "WTI Crude"},
-                        {"name": "TVC:UKOIL", "displayName": "Brent Crude"}
-                    ]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%" }
+                        {"name": "TVC:GOLD", "displayName": "Gold"},
+                        {"name": "TVC:SILVER", "displayName": "Silver"},
+                        {"name": "TVC:USOIL", "displayName": "Crude Oil"},
+                        {"name": "TVC:UKOIL", "displayName": "Brent"}
+                    ]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en" }
                     </script>
                 </div>
              </div>
         </div>
 
-        <div class="panel span-2 tall"><div class="panel-header">Global Activity Monitor</div><div class="content" id="map"></div></div>
-        <div class="panel span-2 tall"><div class="panel-header">Interactive Terminal</div><div class="content" id="tradingview_chart"></div></div>
-
-        <div class="panel">
-            <div class="panel-header">Weather Hub</div>
-            <div class="content"><iframe src="https://www.meteoblue.com/en/weather/widget/three/jakarta_indonesia_1642911?geoloc=fixed&nocurrent=0&nooo=1&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&layout=dark"></iframe></div>
-        </div>
         <div class="panel span-3">
             <div class="panel-header">Market Heatmap</div>
             <div class="content">
                 <div class="tradingview-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
-                    { "exchanges": [], "dataSource": "S&P500", "grouping": "sector", "blockSize": "market_cap_basic", "blockColor": "change", "locale": "en", "symbolUrl": "", "colorTheme": "dark", "hasTopBar": false, "isTransparent": true, "width": "100%", "height": "100%" }
+                    { "exchanges": [], "dataSource": "S&P500", "grouping": "no_grouping", "blockSize": "market_cap_basic", "blockColor": "change", "locale": "en", "symbolUrl": "", "colorTheme": "dark", "hasTopBar": false, "isTransparent": true, "width": "100%", "height": "100%" }
                     </script>
                 </div>
             </div>
@@ -177,51 +215,36 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        // --- 1. WW3 ALGORITHM (SIMULATED) ---
-        function updateRisk() {
-            // Logic: Base tension (35%) + Random Fluctuation (0-15%)
-            // This is a SIMULATION for concept purposes.
-            const base = 35; 
-            const fluctuate = Math.floor(Math.random() * 15);
-            const total = base + fluctuate;
-            
-            const val = document.getElementById('risk-val');
-            const bar = document.getElementById('risk-fill');
-            
-            val.innerText = total + "%";
-            bar.style.width = total + "%";
-            
-            // Color Transition
-            if(total < 30) { val.style.color = "var(--risk-low)"; bar.style.background = "var(--risk-low)"; }
-            else if(total < 60) { val.style.color = "var(--risk-med)"; bar.style.background = "var(--risk-med)"; }
-            else { val.style.color = "var(--risk-high)"; bar.style.background = "var(--risk-high)"; }
-        }
-        setInterval(updateRisk, 5000); updateRisk(); // Update every 5 seconds
-
-        // --- 2. CLOCKS ---
-        function updateClocks() {
-            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            const zones = [{ label: 'JKT', zone: 'Asia/Jakarta' }, { label: 'TYO', zone: 'Asia/Tokyo' }, { label: 'LDN', zone: 'Europe/London' }, { label: 'NYC', zone: 'America/New_York' }];
-            let html = '';
-            zones.forEach(z => {
-                const time = new Intl.DateTimeFormat('en-GB', { ...options, timeZone: z.zone }).format(new Date());
-                html += `<div class="clock-unit"><span class="clock-label">${z.label}</span><span class="clock-time">${time}</span></div>`;
+        // --- 1. WEATHER (Open-Meteo API - Zero Error) ---
+        // Fetches Jakarta (Lat -6.2, Long 106.8)
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true')
+            .then(res => res.json())
+            .then(data => {
+                const temp = Math.round(data.current_weather.temperature);
+                const wind = data.current_weather.windspeed;
+                document.getElementById('weather-box').innerHTML = `
+                    <div class="weather-icon">☁️</div>
+                    <div class="temp-display">${temp}°C</div>
+                    <div class="weather-meta">Wind: ${wind} km/h <br> JAKARTA, ID</div>
+                `;
+            })
+            .catch(e => {
+                document.getElementById('weather-box').innerHTML = '<span style="color:#444">OFFLINE</span>';
             });
-            document.getElementById('clocks').innerHTML = html;
+
+        // --- 2. TIME AGO HELPER ---
+        function timeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            let interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + "h ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + "m ago";
+            return "Just now";
         }
-        setInterval(updateClocks, 1000); updateClocks();
 
-        // --- 3. MAP ---
-        var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([0, 115], 3);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-        fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson').then(res => res.json()).then(data => {
-            L.geoJSON(data, { pointToLayer: (feat, latlng) => L.circleMarker(latlng, { radius: feat.properties.mag * 2, fillColor: feat.properties.mag > 5 ? "#ff4444" : "#00ff88", color: "#000", weight: 1, fillOpacity: 0.8 }).bindPopup(`Mag: ${feat.properties.mag}`) }).addTo(map);
-        });
-
-        // --- 4. CHART ---
-        new TradingView.widget({ "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta", "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart" });
-
-        // --- 5. NEWS ---
+        // --- 3. NEWS (RSS with Time Ago) ---
         async function getNews(url, id, label) {
             const container = document.getElementById(id);
             try {
@@ -229,14 +252,68 @@
                 const response = await fetch(api); const data = await response.json();
                 if (data.status === 'ok') {
                     let html = '';
-                    data.items.slice(0, 6).forEach(item => { html += `<div class="news-item"><div class="news-meta"><span>${label}</span><span>${new Date(item.pubDate).getHours()}:00</span></div><a href="${item.link}" target="_blank">${item.title}</a></div>`; });
+                    data.items.slice(0, 6).forEach(item => {
+                        html += `<div class="news-item">
+                            <div class="news-meta"><span>${label}</span><span>${timeAgo(item.pubDate)}</span></div>
+                            <a href="${item.link}" target="_blank">${item.title}</a>
+                        </div>`;
+                    });
                     container.innerHTML = html;
                 }
-            } catch (err) { container.innerHTML = `<div style="color: #ff4444; font-size: 10px; padding: 10px;">SYNC ERROR</div>`; }
+            } catch (err) { container.innerHTML = `<div style="padding:10px; color:#444;">FEED OFFLINE</div>`; }
         }
         getNews('https://www.theguardian.com/world/rss', 'geo-news', 'Guardian');
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
-        getNews('https://www.theguardian.com/travel/rss', 'travel-news', 'Guardian Travel');
+        getNews('https://www.theguardian.com/travel/rss', 'travel-news', 'Travel');
+
+        // --- 4. CONFLICT METER LOGIC ---
+        function updateRisk() {
+            // Simulated Risk Algorithm
+            const baseRisk = 45; 
+            const variation = Math.floor(Math.random() * 20) - 10;
+            const level = baseRisk + variation;
+            
+            // Reasons
+            const reasons = ["HIGH NAVAL TRAFFIC", "CYBER SPIKE DETECTED", "MARKET VOLATILITY", "REGIONAL UNREST", "SAT COMM CHATTER"];
+            const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+
+            // Needle Rotation: -90deg (0%) to 90deg (100%)
+            // Formula: (Percent * 1.8) - 90
+            const rotation = (level * 1.8) - 90;
+            
+            document.getElementById('risk-needle').style.transform = `rotate(${rotation}deg)`;
+            document.getElementById('risk-val').innerText = level + "% RISK";
+            document.getElementById('risk-reason').innerText = "IND: " + randomReason;
+
+            // Color Logic
+            const valEl = document.getElementById('risk-val');
+            if(level < 40) valEl.style.color = "var(--risk-low)";
+            else if(level < 70) valEl.style.color = "var(--risk-med)";
+            else valEl.style.color = "var(--risk-high)";
+        }
+        setInterval(updateRisk, 4000); updateRisk();
+
+        // --- 5. CLOCKS ---
+        function updateClocks() {
+            const opts = { hour: '2-digit', minute: '2-digit', hour12: false };
+            const zones = [{l:'JKT',z:'Asia/Jakarta'}, {l:'TYO',z:'Asia/Tokyo'}, {l:'LDN',z:'Europe/London'}, {l:'NYC',z:'America/New_York'}];
+            let h = '';
+            zones.forEach(z => {
+                const t = new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: z.z }).format(new Date());
+                h += `<div class="clock-unit"><span class="clock-label">${z.l}</span><span class="clock-time">${t}</span></div>`;
+            });
+            document.getElementById('clocks').innerHTML = h;
+        }
+        setInterval(updateClocks, 1000); updateClocks();
+
+        // --- 6. MAP & CHART ---
+        var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([15, 100], 2);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson').then(r=>r.json()).then(d=>{
+            L.geoJSON(d, { pointToLayer: (f,l)=>L.circleMarker(l, {radius: f.properties.mag*2, fillColor: f.properties.mag>5?"#ff3e3e":"#00ff88", color:null, fillOpacity:0.7}).bindPopup(`M${f.properties.mag}`) }).addTo(map);
+        });
+        
+        new TradingView.widget({ "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta", "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart" });
     </script>
 </body>
 </html>
