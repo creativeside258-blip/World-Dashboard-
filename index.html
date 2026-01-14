@@ -11,9 +11,7 @@
         :root {
             --bg: #000000; --panel: #0b0b0b; --border: #1f1f1f;
             --text: #ffffff; --dim: #666; --accent: #00ff88;
-            --risk-low: #00ff88; /* GREEN */
-            --risk-med: #ffce00; /* YELLOW */
-            --risk-high: #ff3e3e; /* RED */
+            --risk-low: #00ff88; --risk-med: #ffce00; --risk-high: #ff3e3e;
         }
         * { box-sizing: border-box; }
         body { 
@@ -39,7 +37,7 @@
         .clock-label { color: var(--dim); font-size: 9px; font-weight: 700; letter-spacing: 1px; }
         .clock-time { color: var(--accent); font-family: monospace; font-size: 14px; }
 
-        /* GRID SYSTEM */
+        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { 
@@ -65,35 +63,18 @@
         #map { width: 100%; height: 100%; background: #050505; }
         iframe { border: none; width: 100%; height: 100%; }
 
-        /* ADAPTIVE GAUGE */
+        /* GAUGE */
         .gauge-wrapper { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 10px; }
-        .gauge {
-            position: relative; width: 160px; height: 80px;
-            border-radius: 160px 160px 0 0; overflow: hidden; background: #222;
-        }
-        .gauge-arc {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 160px 160px 0 0; 
-            background: var(--risk-low); /* DYNAMIC COLOR */
-            opacity: 0.4; transition: background 1s ease, opacity 1s ease;
-        }
+        .gauge { position: relative; width: 160px; height: 80px; border-radius: 160px 160px 0 0; overflow: hidden; background: #222; }
+        .gauge-arc { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; border-radius: 160px 160px 0 0; background: var(--risk-low); opacity: 0.4; transition: background 1s ease, opacity 1s ease; }
         .gauge-arc.active { opacity: 1; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
-        
-        .gauge-inner {
-            position: absolute; bottom: 0; left: 20px; right: 20px; top: 20px;
-            background: var(--panel); border-radius: 140px 140px 0 0; z-index: 1;
-        }
-        .needle {
-            position: absolute; bottom: 0; left: 50%; width: 4px; height: 75px;
-            background: #fff; transform-origin: bottom center;
-            transform: rotate(-90deg); z-index: 2; border-radius: 2px;
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .gauge-inner { position: absolute; bottom: 0; left: 20px; right: 20px; top: 20px; background: var(--panel); border-radius: 140px 140px 0 0; z-index: 1; }
+        .needle { position: absolute; bottom: 0; left: 50%; width: 4px; height: 75px; background: #fff; transform-origin: bottom center; transform: rotate(-90deg); z-index: 2; border-radius: 2px; transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); }
         .risk-text { margin-top: 15px; text-align: center; }
         .risk-val { font-size: 24px; font-weight: 700; color: #fff; font-family: monospace; transition: color 0.5s; }
         .risk-reason { font-size: 10px; color: var(--dim); margin-top: 5px; letter-spacing: 1px; }
 
-        /* PREP & NEWS & WEATHER */
+        /* PREP & NEWS */
         .prep-list, .scroll-list { padding: 0; overflow-y: auto; height: 100%; }
         .prep-item { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; display: flex; flex-direction: column; gap: 6px; }
         .prep-title { font-size: 11px; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 10px; }
@@ -101,11 +82,9 @@
         .prep-links { display: flex; gap: 8px; margin-left: 30px; }
         .shop-btn { background: #1a1a1a; border: 1px solid #333; color: var(--dim); padding: 3px 8px; font-size: 9px; text-decoration: none; border-radius: 2px; text-transform: uppercase; transition: 0.2s; }
         .shop-btn:hover { border-color: var(--accent); color: var(--accent); }
-
         .news-item { padding: 12px; border-bottom: 1px solid #1a1a1a; }
         .news-item a { color: #e0e0e0; text-decoration: none; font-size: 11.5px; line-height: 1.4; display: block; }
         .news-meta { font-size: 9px; color: var(--dim); margin-bottom: 4px; display: flex; justify-content: space-between; text-transform: uppercase; }
-
         .weather-simple { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; }
         .temp-display { font-size: 38px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
         .weather-meta { font-size: 10px; color: var(--dim); margin-top: 5px; text-transform: uppercase; line-height: 1.4; }
@@ -133,7 +112,7 @@
                 </div>
                 <div class="risk-text">
                     <div class="risk-val" id="risk-val">CALCULATING...</div>
-                    <div class="risk-reason" id="risk-reason">INITIALIZING PROTOCOLS...</div>
+                    <div class="risk-reason" id="risk-reason">MONITORING GLOBAL VECTORS</div>
                 </div>
             </div>
         </div>
@@ -174,6 +153,7 @@
             <div class="panel-header">Currency Rates</div>
             <div class="content">
                 <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
                     { "symbolsGroups": [{"name": "Rates","symbols": [{"name": "FX_IDC:USDIDR", "displayName": "USD/IDR"},{"name": "FX_IDC:CHFIDR", "displayName": "CHF/IDR"},{"name": "FX_IDC:SGDIDR", "displayName": "SGD/IDR"},{"name": "FX_IDC:EURIDR", "displayName": "EUR/IDR"},{"name": "FX_IDC:JPYIDR", "displayName": "JPY/IDR"}]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en" }
                     </script>
@@ -184,8 +164,8 @@
         <div class="panel span-2 tall"><div class="panel-header">Global Activity Monitor</div><div class="content" id="map"></div></div>
         <div class="panel span-2 tall"><div class="panel-header">Market Terminal</div><div class="content" id="tradingview_chart"></div></div>
 
-        <div class="panel"><div class="panel-header">Commodities</div><div class="content"><div class="tradingview-widget-container"><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{ "symbolsGroups": [{"name": "Commodities","symbols": [{"name": "TVC:GOLD", "displayName": "Gold"},{"name": "TVC:SILVER", "displayName": "Silver"},{"name": "TVC:USOIL", "displayName": "Crude Oil"},{"name": "TVC:UKOIL", "displayName": "Brent"}]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en" }</script></div></div></div>
-        <div class="panel span-3"><div class="panel-header">Market Heatmap</div><div class="content"><div class="tradingview-widget-container"><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>{ "exchanges": [], "dataSource": "S&P500", "grouping": "no_grouping", "blockSize": "market_cap_basic", "blockColor": "change", "locale": "en", "symbolUrl": "", "colorTheme": "dark", "hasTopBar": false, "isTransparent": true, "width": "100%", "height": "100%" }</script></div></div></div>
+        <div class="panel"><div class="panel-header">Commodities</div><div class="content"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{ "symbolsGroups": [{"name": "Commodities","symbols": [{"name": "TVC:GOLD", "displayName": "Gold"},{"name": "TVC:SILVER", "displayName": "Silver"},{"name": "TVC:USOIL", "displayName": "Crude Oil"},{"name": "TVC:UKOIL", "displayName": "Brent"}]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en" }</script></div></div></div>
+        <div class="panel span-3"><div class="panel-header">Market Heatmap</div><div class="content"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>{ "exchanges": [], "dataSource": "S&P500", "grouping": "no_grouping", "blockSize": "market_cap_basic", "blockColor": "change", "locale": "en", "symbolUrl": "", "colorTheme": "dark", "hasTopBar": false, "isTransparent": true, "width": "100%", "height": "100%" }</script></div></div></div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -228,11 +208,11 @@
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
         getNews('https://www.theguardian.com/travel/rss', 'travel-news', 'Travel');
 
-        // 4. ADAPTIVE CONFLICT METER (FIXED COLORS)
+        // 4. ADAPTIVE CONFLICT METER (FIXED)
         function updateRisk() {
             // Simulated Risk (0-100)
             const base = 42; 
-            const variance = Math.floor(Math.random() * 20) - 10;
+            const variation = Math.floor(Math.random() * 20) - 10;
             let level = base + variation;
             if(level < 0) level=0; if(level>100) level=100;
 
@@ -288,7 +268,4 @@
             L.geoJSON(d, { pointToLayer: (f,l)=>L.circleMarker(l, {radius: f.properties.mag*2, fillColor: f.properties.mag>5?"#ff3e3e":"#00ff88", color:null, fillOpacity:0.7}).bindPopup(`M${f.properties.mag}`) }).addTo(map);
         });
         
-        new TradingView.widget({ "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta", "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart" });
-    </script>
-</body>
-</html>
+        new TradingView.widget({ "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta", "theme": "dark", "style": "1", "locale": "en", "allow_symbol_
