@@ -10,6 +10,7 @@
         :root {
             --bg: #000000; --panel: #0a0a0a; --border: #1a1a1a;
             --text: #ffffff; --dim: #555; --accent: #00ff88;
+            --risk-low: #00ff88; --risk-med: #ffce00; --risk-high: #ff3e3e;
         }
         * { box-sizing: border-box; }
         body { 
@@ -18,10 +19,12 @@
             font-size: 12px; overflow-x: hidden;
         }
 
-        /* Tactical Header - Stackable for Mobile */
+        /* STICKY HEADER */
         .header {
             display: flex; justify-content: space-between; align-items: flex-end;
-            padding-bottom: 15px; border-bottom: 1px solid var(--border); margin-bottom: 15px;
+            padding: 10px 15px; border-bottom: 1px solid var(--border); margin: -15px -15px 15px -15px;
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(5px);
+            position: sticky; top: 0; z-index: 9999;
             flex-wrap: wrap; gap: 15px;
         }
         .header-left { display: flex; flex-direction: column; gap: 5px; }
@@ -33,22 +36,14 @@
         .clock-label { color: var(--dim); font-size: 9px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
         .clock-time { color: var(--accent); font-family: monospace; font-size: 14px; }
 
-        /* Dashboard Grid - RESPONSIVE SETUP */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Default 4 columns */
-            gap: 12px;
-        }
+        /* GRID SYSTEM */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 
-        /* Mobile Adjustments (iPhone/Android) */
-        @media (max-width: 900px) {
-            .grid { grid-template-columns: repeat(2, 1fr); } /* 2 columns for tablets */
-        }
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; } /* 1 column for iPhone */
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { 
+            .grid { grid-template-columns: 1fr; } 
             .span-2, .tall { grid-column: span 1 !important; grid-row: span 1 !important; min-height: 350px !important; }
-            .header { align-items: flex-start; }
-            .header-clocks { gap: 10px; }
         }
 
         .panel { 
@@ -58,21 +53,35 @@
         .panel-header {
             background: #111; padding: 8px 12px; font-size: 10px; font-weight: 700;
             text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between;
         }
 
         .span-2 { grid-column: span 2; }
         .tall { grid-row: span 2; min-height: 652px; }
+        .short { min-height: 200px; }
 
         .content { flex-grow: 1; position: relative; width: 100%; height: 100%; overflow: hidden; }
         #map { width: 100%; height: 100%; background: #050505; }
         iframe { border: none; width: 100%; height: 100%; }
 
-        /* News & List Styling */
+        /* SCROLL LISTS */
         .scroll-list { padding: 12px; overflow-y: auto; height: 100%; }
         .news-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #141414; }
         .news-item a { color: #eee; text-decoration: none; font-size: 11.5px; line-height: 1.5; display: block; }
         .news-item a:hover { color: var(--accent); }
         .news-meta { font-size: 9px; color: var(--dim); text-transform: uppercase; margin-bottom: 4px; display: flex; justify-content: space-between; }
+
+        /* WW3 INDICATOR STYLING */
+        .risk-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px; text-align: center; }
+        .risk-percent { font-size: 48px; font-weight: 700; font-family: monospace; margin-bottom: 10px; }
+        .risk-bar-bg { width: 100%; height: 10px; background: #222; border-radius: 5px; overflow: hidden; }
+        .risk-bar-fill { height: 100%; width: 0%; transition: width 1s ease, background 1s ease; }
+        .risk-label { font-size: 10px; color: var(--dim); margin-top: 15px; letter-spacing: 2px; }
+        
+        /* PREP LIST STYLING */
+        .prep-item { margin-bottom: 8px; font-size: 11px; display: flex; align-items: center; gap: 8px; }
+        .prep-icon { color: var(--dim); }
+        .prep-check { width: 10px; height: 10px; border: 1px solid var(--dim); }
     </style>
 </head>
 <body>
@@ -86,12 +95,30 @@
     </div>
 
     <div class="grid">
-        <div class="panel"><div class="panel-header">Geopolitics / World</div><div class="content scroll-list" id="geo-news">Syncing Feed...</div></div>
-        <div class="panel"><div class="panel-header">Technology / Science</div><div class="content scroll-list" id="tech-news">Syncing Feed...</div></div>
-        <div class="panel"><div class="panel-header">Travel / Hospitality</div><div class="content scroll-list" id="travel-news">Syncing Feed...</div></div>
+        
+        <div class="panel short">
+            <div class="panel-header">Conflict Escalation Index (Simulated)</div>
+            <div class="content risk-container">
+                <div class="risk-percent" id="risk-val">--%</div>
+                <div class="risk-bar-bg"><div class="risk-bar-fill" id="risk-fill"></div></div>
+                <div class="risk-label">GLOBAL TENSION PROBABILITY</div>
+            </div>
+        </div>
 
-        <div class="panel">
-            <div class="panel-header">Market: IDR Rates</div>
+        <div class="panel short">
+            <div class="panel-header">Emergency Protocols / Prep</div>
+            <div class="content scroll-list">
+                <div class="prep-item"><div class="prep-check"></div> 72-Hour Water Supply (4L/Person)</div>
+                <div class="prep-item"><div class="prep-check"></div> Non-Perishable Food (Canned/Dry)</div>
+                <div class="prep-item"><div class="prep-check"></div> Faraday Bag (Electronics Protection)</div>
+                <div class="prep-item"><div class="prep-check"></div> Analog Radio (Shortwave/AM/FM)</div>
+                <div class="prep-item"><div class="prep-check"></div> Cash Reserve (Small Denominations)</div>
+                <div class="prep-item"><div class="prep-check"></div> Passport & Hardcopy Documents</div>
+            </div>
+        </div>
+
+        <div class="panel span-2 short">
+            <div class="panel-header">Market: Currency Rates</div>
             <div class="content">
                 <div class="tradingview-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
@@ -108,17 +135,12 @@
             </div>
         </div>
 
-        <div class="panel span-2 tall"><div class="panel-header">Global Activity Monitor</div><div class="content" id="map"></div></div>
-        <div class="panel span-2 tall"><div class="panel-header">Interactive Terminal</div><div class="content" id="tradingview_chart"></div></div>
-
+        <div class="panel"><div class="panel-header">Geopolitics / World</div><div class="content scroll-list" id="geo-news">Syncing Feed...</div></div>
+        <div class="panel"><div class="panel-header">Technology / Science</div><div class="content scroll-list" id="tech-news">Syncing Feed...</div></div>
+        <div class="panel"><div class="panel-header">Travel / Hospitality</div><div class="content scroll-list" id="travel-news">Syncing Feed...</div></div>
         <div class="panel">
-            <div class="panel-header">Weather Hub</div>
-            <div class="content"><iframe src="https://www.meteoblue.com/en/weather/widget/three/jakarta_indonesia_1642911?geoloc=fixed&nocurrent=0&nooo=1&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&layout=dark"></iframe></div>
-        </div>
-
-        <div class="panel">
-            <div class="panel-header">Commodities Spot</div>
-            <div class="content">
+             <div class="panel-header">Commodities Spot</div>
+             <div class="content">
                 <div class="tradingview-widget-container">
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
                     { "symbolsGroups": [{"name": "Commodities","symbols": [
@@ -129,10 +151,17 @@
                     ]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%" }
                     </script>
                 </div>
-            </div>
+             </div>
         </div>
 
-        <div class="panel span-2">
+        <div class="panel span-2 tall"><div class="panel-header">Global Activity Monitor</div><div class="content" id="map"></div></div>
+        <div class="panel span-2 tall"><div class="panel-header">Interactive Terminal</div><div class="content" id="tradingview_chart"></div></div>
+
+        <div class="panel">
+            <div class="panel-header">Weather Hub</div>
+            <div class="content"><iframe src="https://www.meteoblue.com/en/weather/widget/three/jakarta_indonesia_1642911?geoloc=fixed&nocurrent=0&nooo=1&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&layout=dark"></iframe></div>
+        </div>
+        <div class="panel span-3">
             <div class="panel-header">Market Heatmap</div>
             <div class="content">
                 <div class="tradingview-widget-container">
@@ -148,10 +177,31 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        // --- 1. CLOCKS ---
+        // --- 1. WW3 ALGORITHM (SIMULATED) ---
+        function updateRisk() {
+            // Logic: Base tension (35%) + Random Fluctuation (0-15%)
+            // This is a SIMULATION for concept purposes.
+            const base = 35; 
+            const fluctuate = Math.floor(Math.random() * 15);
+            const total = base + fluctuate;
+            
+            const val = document.getElementById('risk-val');
+            const bar = document.getElementById('risk-fill');
+            
+            val.innerText = total + "%";
+            bar.style.width = total + "%";
+            
+            // Color Transition
+            if(total < 30) { val.style.color = "var(--risk-low)"; bar.style.background = "var(--risk-low)"; }
+            else if(total < 60) { val.style.color = "var(--risk-med)"; bar.style.background = "var(--risk-med)"; }
+            else { val.style.color = "var(--risk-high)"; bar.style.background = "var(--risk-high)"; }
+        }
+        setInterval(updateRisk, 5000); updateRisk(); // Update every 5 seconds
+
+        // --- 2. CLOCKS ---
         function updateClocks() {
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            const zones = [{ label: 'JAKARTA', zone: 'Asia/Jakarta' }, { label: 'TOKYO', zone: 'Asia/Tokyo' }, { label: 'LONDON', zone: 'Europe/London' }, { label: 'NEW YORK', zone: 'America/New_York' }];
+            const zones = [{ label: 'JKT', zone: 'Asia/Jakarta' }, { label: 'TYO', zone: 'Asia/Tokyo' }, { label: 'LDN', zone: 'Europe/London' }, { label: 'NYC', zone: 'America/New_York' }];
             let html = '';
             zones.forEach(z => {
                 const time = new Intl.DateTimeFormat('en-GB', { ...options, timeZone: z.zone }).format(new Date());
@@ -161,17 +211,17 @@
         }
         setInterval(updateClocks, 1000); updateClocks();
 
-        // --- 2. MAP ---
+        // --- 3. MAP ---
         var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([0, 115], 3);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
         fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson').then(res => res.json()).then(data => {
             L.geoJSON(data, { pointToLayer: (feat, latlng) => L.circleMarker(latlng, { radius: feat.properties.mag * 2, fillColor: feat.properties.mag > 5 ? "#ff4444" : "#00ff88", color: "#000", weight: 1, fillOpacity: 0.8 }).bindPopup(`Mag: ${feat.properties.mag}`) }).addTo(map);
         });
 
-        // --- 3. CHART ---
+        // --- 4. CHART ---
         new TradingView.widget({ "autosize": true, "symbol": "IDX:COMPOSITE", "interval": "D", "timezone": "Asia/Jakarta", "theme": "dark", "style": "1", "locale": "en", "allow_symbol_change": true, "container_id": "tradingview_chart" });
 
-        // --- 4. NEWS ---
+        // --- 5. NEWS ---
         async function getNews(url, id, label) {
             const container = document.getElementById(id);
             try {
