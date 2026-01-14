@@ -19,12 +19,12 @@
             font-size: 12px; overflow-x: hidden;
         }
 
-        /* HEADER */
+        /* STICKY HEADER */
         .header {
             display: flex; justify-content: space-between; align-items: flex-end;
             padding: 10px 15px; border-bottom: 1px solid var(--border); margin: -15px -15px 15px -15px;
             background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 999;
+            position: sticky; top: 0; z-index: 9999;
             flex-wrap: wrap; gap: 15px;
         }
         .header-left { display: flex; flex-direction: column; gap: 4px; }
@@ -36,20 +36,19 @@
         .clock-label { color: var(--dim); font-size: 9px; font-weight: 700; letter-spacing: 1px; }
         .clock-time { color: var(--accent); font-family: monospace; font-size: 14px; }
 
-        /* GRID */
+        /* GRID SYSTEM */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         
         /* RESPONSIVE */
         @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { 
             .grid { grid-template-columns: 1fr; } 
-            .span-2, .tall { grid-column: span 1 !important; grid-row: span 1 !important; min-height: 300px !important; }
+            .span-2, .tall { grid-column: span 1 !important; grid-row: span 1 !important; min-height: 320px !important; }
         }
 
         .panel { 
             background: var(--panel); border: 1px solid var(--border); 
-            display: flex; flex-direction: column; min-height: 280px;
-            position: relative;
+            display: flex; flex-direction: column; min-height: 280px; position: relative;
         }
         .panel-header {
             background: #111; padding: 8px 12px; font-size: 10px; font-weight: 700;
@@ -59,7 +58,7 @@
 
         .span-2 { grid-column: span 2; }
         .tall { grid-row: span 2; min-height: 580px; }
-        .short { min-height: 180px; }
+        .short { min-height: 220px; }
 
         .content { flex: 1; position: relative; width: 100%; height: 100%; overflow: hidden; }
         #map { width: 100%; height: 100%; background: #050505; }
@@ -69,43 +68,56 @@
         .scroll-list { padding: 0; overflow-y: auto; height: 100%; }
         .news-item { padding: 12px; border-bottom: 1px solid #1a1a1a; transition: background 0.2s; }
         .news-item:hover { background: #141414; }
-        .news-item a { color: #e0e0e0; text-decoration: none; font-size: 11.5px; line-height: 1.4; display: block; font-weight: 400; }
+        .news-item a { color: #e0e0e0; text-decoration: none; font-size: 11.5px; line-height: 1.4; display: block; }
         .news-meta { font-size: 9px; color: var(--dim); margin-bottom: 4px; display: flex; justify-content: space-between; text-transform: uppercase; }
 
-        /* METER GAUGE (CSS Only) */
+        /* DYNAMIC CONFLICT GAUGE */
         .gauge-wrapper { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 10px; }
         .gauge {
-            position: relative; width: 140px; height: 70px; /* Half circle */
-            background: conic-gradient(from 180deg at 50% 100%, var(--risk-low) 0deg 60deg, var(--risk-med) 60deg 120deg, var(--risk-high) 120deg 180deg);
-            border-radius: 140px 140px 0 0;
-            overflow: hidden;
+            position: relative; width: 160px; height: 80px; /* Half circle */
+            background: #1a1a1a; border-radius: 160px 160px 0 0; overflow: hidden;
         }
+        /* The colored arc */
+        .gauge-arc {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: conic-gradient(from 180deg at 50% 100%, var(--risk-low) 0deg 60deg, var(--risk-med) 60deg 120deg, var(--risk-high) 120deg 180deg);
+            border-radius: 160px 160px 0 0; opacity: 0.8;
+        }
+        /* Inner mask */
         .gauge-inner {
             position: absolute; bottom: 0; left: 20px; right: 20px; top: 20px;
-            background: var(--panel); border-radius: 140px 140px 0 0;
-            z-index: 1;
+            background: var(--panel); border-radius: 140px 140px 0 0; z-index: 1;
         }
         .needle {
-            position: absolute; bottom: 0; left: 50%; width: 4px; height: 65px;
+            position: absolute; bottom: 0; left: 50%; width: 4px; height: 75px;
             background: #fff; transform-origin: bottom center;
-            transform: rotate(-90deg); /* Start at -90 (Left) */
-            z-index: 2; transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 2px;
+            transform: rotate(-90deg); z-index: 2; border-radius: 2px;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s;
         }
         .risk-text { margin-top: 15px; text-align: center; }
-        .risk-val { font-size: 24px; font-weight: 700; color: #fff; font-family: monospace; }
-        .risk-reason { font-size: 10px; color: var(--dim); margin-top: 5px; max-width: 80%; line-height: 1.3; }
+        .risk-val { font-size: 24px; font-weight: 700; color: #fff; font-family: monospace; transition: color 0.5s; }
+        .risk-reason { font-size: 10px; color: var(--dim); margin-top: 5px; max-width: 90%; line-height: 1.3; margin-left: auto; margin-right: auto; }
+
+        /* EMERGENCY PREP */
+        .prep-list { padding: 0; overflow-y: auto; height: 100%; }
+        .prep-item { 
+            padding: 10px 12px; border-bottom: 1px solid #1a1a1a; 
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .prep-title { font-size: 11px; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 8px; }
+        .prep-check { width: 8px; height: 8px; border: 1px solid var(--accent); border-radius: 50%; }
+        .prep-links { display: flex; gap: 8px; }
+        .shop-btn {
+            background: #1a1a1a; border: 1px solid #333; color: var(--dim);
+            padding: 3px 8px; font-size: 9px; text-decoration: none; border-radius: 2px;
+            text-transform: uppercase; transition: 0.2s;
+        }
+        .shop-btn:hover { border-color: var(--accent); color: var(--accent); }
 
         /* WEATHER (Simple) */
         .weather-simple { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; }
-        .temp-display { font-size: 32px; font-weight: 700; color: var(--text); }
-        .weather-meta { font-size: 11px; color: var(--dim); margin-top: 5px; text-transform: uppercase; }
-        .weather-icon { font-size: 24px; margin-bottom: 5px; }
-
-        /* PREP LIST */
-        .prep-item { padding: 8px 12px; font-size: 11px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #1a1a1a; }
-        .prep-check { width: 12px; height: 12px; border: 1px solid #444; border-radius: 2px; }
-
+        .temp-display { font-size: 38px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
+        .weather-meta { font-size: 10px; color: var(--dim); margin-top: 5px; text-transform: uppercase; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -121,41 +133,65 @@
     <div class="grid">
         
         <div class="panel short">
-            <div class="panel-header">Conflict Index</div>
+            <div class="panel-header">Conflict Index (Simulated)</div>
             <div class="content gauge-wrapper">
                 <div class="gauge">
+                    <div class="gauge-arc"></div>
                     <div class="gauge-inner"></div>
                     <div class="needle" id="risk-needle"></div>
                 </div>
                 <div class="risk-text">
-                    <div class="risk-val" id="risk-val">DEFCON 4</div>
-                    <div class="risk-reason" id="risk-reason">ANALYZING GEOPOLITICAL VECTORS...</div>
+                    <div class="risk-val" id="risk-val">CALCULATING...</div>
+                    <div class="risk-reason" id="risk-reason">INITIALIZING PROTOCOLS...</div>
                 </div>
             </div>
         </div>
 
         <div class="panel short">
-            <div class="panel-header">Doomsday Prep</div>
-            <div class="content scroll-list">
-                <div class="prep-item"><div class="prep-check"></div> 72hr Water Supply (4L/day)</div>
-                <div class="prep-item"><div class="prep-check"></div> Iodine Tablets (Radiation)</div>
-                <div class="prep-item"><div class="prep-check"></div> Analog/Ham Radio</div>
-                <div class="prep-item"><div class="prep-check"></div> Faraday Shielding</div>
-                <div class="prep-item"><div class="prep-check"></div> Hard Cash Reserve</div>
+            <div class="panel-header">Emergency Prep (Indo Sources)</div>
+            <div class="content prep-list">
+                <div class="prep-item">
+                    <div class="prep-title"><div class="prep-check"></div>Water Filter (Portable)</div>
+                    <div class="prep-links">
+                        <a href="https://www.tokopedia.com/search?q=sawyer+mini+water+filter" target="_blank" class="shop-btn">Tokopedia</a>
+                        <a href="https://shopee.co.id/search?keyword=water+filter+portable" target="_blank" class="shop-btn">Shopee</a>
+                    </div>
+                </div>
+                <div class="prep-item">
+                    <div class="prep-title"><div class="prep-check"></div>Emergency Food (Rations)</div>
+                    <div class="prep-links">
+                        <a href="https://www.tokopedia.com/search?q=makanan+darurat+bencana" target="_blank" class="shop-btn">Tokopedia</a>
+                        <a href="https://shopee.co.id/search?keyword=food+ration+emergency" target="_blank" class="shop-btn">Shopee</a>
+                    </div>
+                </div>
+                <div class="prep-item">
+                    <div class="prep-title"><div class="prep-check"></div>First Aid Kit (Complete)</div>
+                    <div class="prep-links">
+                        <a href="https://www.tokopedia.com/search?q=p3k+lengkap+tas" target="_blank" class="shop-btn">Tokopedia</a>
+                        <a href="https://shopee.co.id/search?keyword=first+aid+kit+complete" target="_blank" class="shop-btn">Shopee</a>
+                    </div>
+                </div>
+                <div class="prep-item">
+                    <div class="prep-title"><div class="prep-check"></div>Emergency Radio (AM/FM)</div>
+                    <div class="prep-links">
+                        <a href="https://www.tokopedia.com/search?q=radio+portable+fm+am" target="_blank" class="shop-btn">Tokopedia</a>
+                        <a href="https://shopee.co.id/search?keyword=radio+emergency+solar" target="_blank" class="shop-btn">Shopee</a>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="panel short">
             <div class="panel-header">Jakarta Weather</div>
             <div class="content weather-simple" id="weather-box">
-                <div style="color: #666;">Connecting Satellite...</div>
+                <div style="color: #444;">ACQUIRING SIGNAL...</div>
             </div>
         </div>
 
         <div class="panel short">
-            <div class="panel-header">Live Intel (Bloomberg)</div>
+            <div class="panel-header">Live Intel (Sky News)</div>
             <div class="content">
-                <iframe src="https://www.youtube.com/embed/dp8PhLsUcFE?autoplay=1&mute=1&controls=0&modestbranding=1" allow="autoplay; encrypted-media"></iframe>
+                <iframe src="https://www.youtube.com/embed/9Auq9mYxFEE?autoplay=1&mute=1&controls=0&modestbranding=1" allow="autoplay; encrypted-media"></iframe>
             </div>
         </div>
 
@@ -215,36 +251,36 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
-        // --- 1. WEATHER (Open-Meteo API - Zero Error) ---
-        // Fetches Jakarta (Lat -6.2, Long 106.8)
+        // --- 1. WEATHER (Open-Meteo API) ---
         fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true')
             .then(res => res.json())
             .then(data => {
                 const temp = Math.round(data.current_weather.temperature);
                 const wind = data.current_weather.windspeed;
                 document.getElementById('weather-box').innerHTML = `
-                    <div class="weather-icon">☁️</div>
+                    <div style="font-size:24px;">⛅</div>
                     <div class="temp-display">${temp}°C</div>
                     <div class="weather-meta">Wind: ${wind} km/h <br> JAKARTA, ID</div>
                 `;
             })
-            .catch(e => {
-                document.getElementById('weather-box').innerHTML = '<span style="color:#444">OFFLINE</span>';
-            });
+            .catch(e => { document.getElementById('weather-box').innerHTML = 'OFFLINE'; });
 
         // --- 2. TIME AGO HELPER ---
         function timeAgo(dateString) {
             const date = new Date(dateString);
             const now = new Date();
-            const seconds = Math.floor((now - date) / 1000);
-            let interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + "h ago";
-            interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + "m ago";
-            return "Just now";
+            const diffMs = now - date;
+            const diffSec = Math.floor(diffMs / 1000);
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHr = Math.floor(diffMin / 60);
+            
+            if (diffSec < 60) return "Just now";
+            if (diffMin < 60) return `${diffMin}m ago`;
+            if (diffHr < 24) return `${diffHr}h ago`;
+            return "1d+ ago";
         }
 
-        // --- 3. NEWS (RSS with Time Ago) ---
+        // --- 3. NEWS FEED ---
         async function getNews(url, id, label) {
             const container = document.getElementById(id);
             try {
@@ -266,32 +302,45 @@
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
         getNews('https://www.theguardian.com/travel/rss', 'travel-news', 'Travel');
 
-        // --- 4. CONFLICT METER LOGIC ---
+        // --- 4. DYNAMIC CONFLICT GAUGE ---
         function updateRisk() {
-            // Simulated Risk Algorithm
-            const baseRisk = 45; 
-            const variation = Math.floor(Math.random() * 20) - 10;
-            const level = baseRisk + variation;
-            
-            // Reasons
-            const reasons = ["HIGH NAVAL TRAFFIC", "CYBER SPIKE DETECTED", "MARKET VOLATILITY", "REGIONAL UNREST", "SAT COMM CHATTER"];
-            const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+            // Simulated Logic: Moves needle between -90deg (Safe) and 90deg (Critical)
+            const baseLevel = 45; // Baseline risk
+            const variance = Math.floor(Math.random() * 20) - 10;
+            let currentLevel = baseLevel + variance;
+            if(currentLevel < 0) currentLevel = 0; if(currentLevel > 100) currentLevel = 100;
 
-            // Needle Rotation: -90deg (0%) to 90deg (100%)
-            // Formula: (Percent * 1.8) - 90
-            const rotation = (level * 1.8) - 90;
+            // Visual Updates
+            const needle = document.getElementById('risk-needle');
+            const valText = document.getElementById('risk-val');
+            const reasonText = document.getElementById('risk-reason');
             
-            document.getElementById('risk-needle').style.transform = `rotate(${rotation}deg)`;
-            document.getElementById('risk-val').innerText = level + "% RISK";
-            document.getElementById('risk-reason').innerText = "IND: " + randomReason;
+            // Rotation Formula: (Percent * 1.8) - 90
+            const rotation = (currentLevel * 1.8) - 90;
+            needle.style.transform = `rotate(${rotation}deg)`;
 
-            // Color Logic
-            const valEl = document.getElementById('risk-val');
-            if(level < 40) valEl.style.color = "var(--risk-low)";
-            else if(level < 70) valEl.style.color = "var(--risk-med)";
-            else valEl.style.color = "var(--risk-high)";
+            // State Logic
+            let color = "var(--risk-low)";
+            let reason = "STABLE";
+            let defcon = "DEFCON 5";
+
+            if (currentLevel > 35) { 
+                color = "var(--risk-med)"; 
+                reason = "REGIONAL FRICTION DETECTED"; 
+                defcon = "DEFCON 4";
+            }
+            if (currentLevel > 65) { 
+                color = "var(--risk-high)"; 
+                reason = "CRITICAL: NAVAL ESCALATION"; 
+                defcon = "DEFCON 3";
+            }
+
+            needle.style.backgroundColor = color;
+            valText.style.color = color;
+            valText.innerText = defcon;
+            reasonText.innerText = `SYS: ${reason} (${currentLevel}%)`;
         }
-        setInterval(updateRisk, 4000); updateRisk();
+        setInterval(updateRisk, 5000); updateRisk();
 
         // --- 5. CLOCKS ---
         function updateClocks() {
@@ -306,9 +355,20 @@
         }
         setInterval(updateClocks, 1000); updateClocks();
 
-        // --- 6. MAP & CHART ---
-        var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([15, 100], 2);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        // --- 6. MAP (FIXED: SINGLE WORLD) ---
+        // 'noWrap: true' and 'maxBounds' prevents the map from repeating
+        var map = L.map('map', { 
+            zoomControl: false, 
+            attributionControl: false,
+            minZoom: 2,
+            maxBounds: [[-90, -180], [90, 180]] 
+        }).setView([15, 0], 2);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            noWrap: true,
+            bounds: [[-90, -180], [90, 180]]
+        }).addTo(map);
+
         fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson').then(r=>r.json()).then(d=>{
             L.geoJSON(d, { pointToLayer: (f,l)=>L.circleMarker(l, {radius: f.properties.mag*2, fillColor: f.properties.mag>5?"#ff3e3e":"#00ff88", color:null, fillOpacity:0.7}).bindPopup(`M${f.properties.mag}`) }).addTo(map);
         });
