@@ -93,6 +93,7 @@
         .temp-display { font-size: 32px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
         .weather-details { display: flex; gap: 15px; font-size: 10px; color: var(--dim); margin-top: 5px; text-transform: uppercase; }
         .weather-detail-item span { color: var(--accent); font-weight: 700; }
+        .weather-icon-large { font-size: 32px; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -240,7 +241,18 @@
         }
         setInterval(updateRisk, 5000); updateRisk();
 
-        // --- 1. SEARCHABLE WEATHER (COMMAND) ---
+        // --- 1. SEARCHABLE WEATHER (COMMAND + ICONS) ---
+        
+        // WMO Weather Codes to Emojis
+        const weatherIcons = {
+            0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 
+            45: '🌫️', 48: '🌫️', 
+            51: '🌦️', 53: '🌦️', 55: '🌧️', 
+            61: '🌧️', 63: '🌧️', 65: '🌧️', 
+            80: '🌦️', 81: '🌧️', 82: '⛈️', 
+            95: '⛈️', 96: '⛈️', 99: '⛈️'
+        };
+
         async function fetchWeather(city) {
             const ui = document.getElementById('weather-data');
             ui.innerHTML = '<div style="color:#666">SCANNING...</div>';
@@ -259,8 +271,13 @@
                 const t = Math.round(wData.current_weather.temperature);
                 const w = wData.current_weather.windspeed;
                 const rain = wData.hourly.precipitation_probability[new Date().getHours()] || 0;
+                
+                // Get Icon
+                const code = wData.current_weather.weathercode;
+                const icon = weatherIcons[code] || '❓';
 
                 ui.innerHTML = `
+                    <div class="weather-icon-large">${icon}</div>
                     <div class="temp-display">${t}°C</div>
                     <div class="weather-details">
                         <div class="weather-detail-item">WIND: <span>${w}km/h</span></div>
