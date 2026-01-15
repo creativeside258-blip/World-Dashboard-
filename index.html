@@ -71,17 +71,21 @@
         .risk-val { font-size: 24px; font-weight: 700; color: #fff; font-family: monospace; transition: color 0.5s; }
         .risk-reason { font-size: 9px; color: var(--dim); margin-top: 5px; letter-spacing: 1px; border-top: 1px solid #333; padding-top: 5px; }
         .intel-line { color: var(--accent); animation: blink 2s infinite; }
-
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* LISTS */
-        .prep-list, .scroll-list { padding: 0; overflow-y: auto; height: 100%; }
-        .prep-item { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; display: flex; flex-direction: column; gap: 6px; }
-        .prep-title { font-size: 11px; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 10px; }
-        .prep-icon { font-size: 14px; width: 20px; text-align: center; }
-        .prep-links { display: flex; gap: 8px; margin-left: 30px; }
-        .shop-btn { background: #1a1a1a; border: 1px solid #333; color: var(--dim); padding: 3px 8px; font-size: 9px; text-decoration: none; border-radius: 2px; text-transform: uppercase; transition: 0.2s; }
-        .shop-btn:hover { border-color: var(--accent); color: var(--accent); }
+        /* LISTS (PREP & METALS) */
+        .scroll-list { padding: 0; overflow-y: auto; height: 100%; }
+        .list-item { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; display: flex; flex-direction: column; gap: 6px; }
+        .list-title { font-size: 11px; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 10px; }
+        .list-icon { font-size: 14px; width: 20px; text-align: center; }
+        .list-links { display: flex; gap: 8px; margin-left: 30px; }
+        .action-btn { 
+            background: #1a1a1a; border: 1px solid #333; color: var(--dim);
+            padding: 3px 8px; font-size: 9px; text-decoration: none; border-radius: 2px;
+            text-transform: uppercase; transition: 0.2s; cursor: pointer;
+        }
+        .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+        
         .news-item { padding: 12px; border-bottom: 1px solid #1a1a1a; }
         .news-item a { color: #e0e0e0; text-decoration: none; font-size: 11.5px; line-height: 1.4; display: block; }
         .news-meta { font-size: 9px; color: var(--dim); margin-bottom: 4px; display: flex; justify-content: space-between; text-transform: uppercase; }
@@ -128,15 +132,15 @@
 
         <div class="panel short">
             <div class="panel-header">Emergency Prep (Indo Sources)</div>
-            <div class="content prep-list">
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">💧</span>Portable Water Filter</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=sawyer+mini+water+filter" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=water+filter+portable" target="_blank" class="shop-btn">Shopee</a></div></div>
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">🔋</span>Solar Power Bank</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=power+bank+solar+panel" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=power+bank+solar" target="_blank" class="shop-btn">Shopee</a></div></div>
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">🥫</span>Emergency Rations</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=makanan+kaleng+darurat" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=emergency+food+ration" target="_blank" class="shop-btn">Shopee</a></div></div>
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">🩹</span>Trauma First Aid Kit</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=p3k+trauma+kit" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=first+aid+kit+complete" target="_blank" class="shop-btn">Shopee</a></div></div>
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">📻</span>Emergency Radio (AM/SW)</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=radio+portable+sw+am" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=radio+emergency" target="_blank" class="shop-btn">Shopee</a></div></div>
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">😷</span>N95 Respirator</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=masker+n95+3m" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=gas+mask+respirator" target="_blank" class="shop-btn">Shopee</a></div></div>
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">🔦</span>Tactical Flashlight</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=senter+taktikal+led" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=tactical+flashlight" target="_blank" class="shop-btn">Shopee</a></div></div>
-                <div class="prep-item"><div class="prep-title"><span class="prep-icon">🛠️</span>Multitool</div><div class="prep-links"><a href="https://www.tokopedia.com/search?q=leatherman+multitool" target="_blank" class="shop-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=multitool+knife" target="_blank" class="shop-btn">Shopee</a></div></div>
+            <div class="content scroll-list">
+                <div class="list-item"><div class="list-title"><span class="list-icon">💧</span>Portable Water Filter</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=sawyer+mini+water+filter" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=water+filter+portable" target="_blank" class="action-btn">Shopee</a></div></div>
+                <div class="list-item"><div class="list-title"><span class="list-icon">🔋</span>Solar Power Bank</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=power+bank+solar+panel" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=power+bank+solar" target="_blank" class="action-btn">Shopee</a></div></div>
+                <div class="list-item"><div class="list-title"><span class="list-icon">🥫</span>Emergency Rations</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=makanan+kaleng+darurat" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=emergency+food+ration" target="_blank" class="action-btn">Shopee</a></div></div>
+                <div class="list-item"><div class="list-title"><span class="list-icon">🩹</span>Trauma First Aid Kit</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=p3k+trauma+kit" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=first+aid+kit+complete" target="_blank" class="action-btn">Shopee</a></div></div>
+                <div class="list-item"><div class="list-title"><span class="list-icon">📻</span>Emergency Radio (AM/SW)</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=radio+portable+sw+am" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=radio+emergency" target="_blank" class="action-btn">Shopee</a></div></div>
+                <div class="list-item"><div class="list-title"><span class="list-icon">😷</span>N95 Respirator</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=masker+n95+3m" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=gas+mask+respirator" target="_blank" class="action-btn">Shopee</a></div></div>
+                <div class="list-item"><div class="list-title"><span class="list-icon">🔦</span>Tactical Flashlight</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=senter+taktikal+led" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=tactical+flashlight" target="_blank" class="action-btn">Shopee</a></div></div>
+                <div class="list-item"><div class="list-title"><span class="list-icon">🛠️</span>Multitool</div><div class="list-links"><a href="https://www.tokopedia.com/search?q=leatherman+multitool" target="_blank" class="action-btn">Tokopedia</a><a href="https://shopee.co.id/search?keyword=multitool+knife" target="_blank" class="action-btn">Shopee</a></div></div>
             </div>
         </div>
 
@@ -157,11 +161,29 @@
             </div>
         </div>
 
-        <div class="panel"><div class="panel-header">Geopolitics</div><div class="content scroll-list" id="geo-news">Loading...</div></div>
-        <div class="panel"><div class="panel-header">Tech & Cyber</div><div class="content scroll-list" id="tech-news">Loading...</div></div>
-        <div class="panel"><div class="panel-header">Global Travel</div><div class="content scroll-list" id="travel-news">Loading...</div></div>
+        <div class="panel span-2">
+            <div class="panel-header">Precious Metals (Indonesia Stock Check)</div>
+            <div class="content scroll-list" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:10px;">
+                <div>
+                    <div style="color:var(--accent); font-size:10px; margin-bottom:5px; font-weight:bold;">LOGAM MULIA (ANTAM)</div>
+                    <div class="list-item"><div class="list-title">0.5 Gram Gold Bar</div><a href="https://www.logammulia.com/id/product/emas-batangan" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">1 Gram Gold Bar</div><a href="https://www.logammulia.com/id/product/emas-batangan" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">5 Gram Gold Bar</div><a href="https://www.logammulia.com/id/product/emas-batangan" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">10 Gram Gold Bar</div><a href="https://www.logammulia.com/id/product/emas-batangan" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">25 Gram Gold Bar</div><a href="https://www.logammulia.com/id/product/emas-batangan" target="_blank" class="action-btn">Check Stock</a></div>
+                </div>
+                <div>
+                    <div style="color:var(--accent); font-size:10px; margin-bottom:5px; font-weight:bold;">SILVERGRAM</div>
+                    <div class="list-item"><div class="list-title">1 Gram Silver Bar</div><a href="https://www.silvergram.co.id/portal/product.do" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">5 Gram Silver Bar</div><a href="https://www.silvergram.co.id/portal/product.do" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">10 Gram Silver Bar</div><a href="https://www.silvergram.co.id/portal/product.do" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">100 Gram Silver Bar</div><a href="https://www.silvergram.co.id/portal/product.do" target="_blank" class="action-btn">Check Stock</a></div>
+                    <div class="list-item"><div class="list-title">250 Gram Silver Bar</div><a href="https://www.silvergram.co.id/portal/product.do" target="_blank" class="action-btn">Check Stock</a></div>
+                </div>
+            </div>
+        </div>
 
-        <div class="panel">
+        <div class="panel span-2">
             <div class="panel-header">Currency Rates</div>
             <div class="content">
                 <div class="tradingview-widget-container">
@@ -173,11 +195,13 @@
             </div>
         </div>
 
+        <div class="panel"><div class="panel-header">Geopolitics</div><div class="content scroll-list" id="geo-news">Loading...</div></div>
+        <div class="panel"><div class="panel-header">Tech & Cyber</div><div class="content scroll-list" id="tech-news">Loading...</div></div>
+        <div class="panel"><div class="panel-header">Global Travel</div><div class="content scroll-list" id="travel-news">Loading...</div></div>
+        <div class="panel"><div class="panel-header">Commodities</div><div class="content"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{ "symbolsGroups": [{"name": "Commodities","symbols": [{"name": "TVC:GOLD", "displayName": "Gold"},{"name": "TVC:SILVER", "displayName": "Silver"},{"name": "TVC:USOIL", "displayName": "Crude Oil"},{"name": "TVC:UKOIL", "displayName": "Brent"}]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en" }</script></div></div></div>
+
         <div class="panel span-2 tall"><div class="panel-header">Earthquake Monitor</div><div class="content" id="map"></div></div>
         <div class="panel span-2 tall"><div class="panel-header">Market Terminal</div><div class="content" id="tradingview_chart"></div></div>
-
-        <div class="panel"><div class="panel-header">Commodities</div><div class="content"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>{ "symbolsGroups": [{"name": "Commodities","symbols": [{"name": "TVC:GOLD", "displayName": "Gold"},{"name": "TVC:SILVER", "displayName": "Silver"},{"name": "TVC:USOIL", "displayName": "Crude Oil"},{"name": "TVC:UKOIL", "displayName": "Brent"}]}], "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "en" }</script></div></div></div>
-        <div class="panel span-3"><div class="panel-header">Market Heatmap</div><div class="content"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>{ "exchanges": [], "dataSource": "S&P500", "grouping": "no_grouping", "blockSize": "market_cap_basic", "blockColor": "change", "locale": "en", "symbolUrl": "", "colorTheme": "dark", "hasTopBar": false, "isTransparent": true, "width": "100%", "height": "100%" }</script></div></div></div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -241,9 +265,7 @@
         }
         setInterval(updateRisk, 5000); updateRisk();
 
-        // --- 1. SEARCHABLE WEATHER (COMMAND + ICONS) ---
-        
-        // WMO Weather Codes to Emojis
+        // --- 1. SEARCHABLE WEATHER (WITH ICONS) ---
         const weatherIcons = {
             0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 
             45: '🌫️', 48: '🌫️', 
@@ -257,22 +279,17 @@
             const ui = document.getElementById('weather-data');
             ui.innerHTML = '<div style="color:#666">SCANNING...</div>';
             try {
-                // 1. Geocoding
                 const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=en&format=json`);
                 const geoData = await geoRes.json();
                 if(!geoData.results) throw new Error("City not found");
                 
                 const { latitude, longitude, name, country_code } = geoData.results[0];
-
-                // 2. Weather
                 const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=precipitation_probability&forecast_days=1`);
                 const wData = await wRes.json();
                 
                 const t = Math.round(wData.current_weather.temperature);
                 const w = wData.current_weather.windspeed;
                 const rain = wData.hourly.precipitation_probability[new Date().getHours()] || 0;
-                
-                // Get Icon
                 const code = wData.current_weather.weathercode;
                 const icon = weatherIcons[code] || '❓';
 
@@ -289,8 +306,7 @@
                 ui.innerHTML = '<div style="color:var(--risk-high)">TARGET NOT FOUND</div>';
             }
         }
-        // Init default
-        fetchWeather('Jakarta');
+        fetchWeather('Jakarta'); // Init
 
         // --- 2. NEWS ---
         function timeAgo(dateString) {
@@ -319,9 +335,8 @@
         getNews('https://www.wired.com/feed/rss', 'tech-news', 'Wired');
         getNews('https://www.theguardian.com/travel/rss', 'travel-news', 'Travel');
 
-        // --- 3. EARTHQUAKE MONITOR (FIXED VISIBILITY) ---
+        // --- 3. EARTHQUAKE MONITOR ---
         try {
-            // Updated bounds to include Australia/NZ (-50 lat)
             var map = L.map('map', { 
                 zoomControl: false, attributionControl: false, minZoom: 1, 
                 maxBounds: [[-90, -200], [90, 200]] 
@@ -338,23 +353,11 @@
                         pointToLayer: (f,l) => {
                             const mag = f.properties.mag;
                             const color = mag > 5 ? "#ff3e3e" : "#00ff88";
-                            return L.circleMarker(l, {
-                                radius: mag * 1.5, 
-                                fillColor: color, 
-                                color: null, 
-                                fillOpacity: 0.8 
-                            });
+                            return L.circleMarker(l, { radius: mag * 1.5, fillColor: color, color: null, fillOpacity: 0.8 });
                         },
                         onEachFeature: (f, layer) => {
-                            // Tooltip with Country/Place info
                             const date = new Date(f.properties.time).toLocaleTimeString();
-                            layer.bindPopup(`
-                                <div style="font-family:'Space Grotesk'; font-size:11px; text-transform:uppercase; color:#000;">
-                                    <b>LOC: ${f.properties.place}</b><br>
-                                    MAG: ${f.properties.mag}<br>
-                                    TIME: ${date}
-                                </div>
-                            `);
+                            layer.bindPopup(`<div style="font-family:'Space Grotesk'; font-size:11px; text-transform:uppercase; color:#000;"><b>LOC: ${f.properties.place}</b><br>MAG: ${f.properties.mag}<br>TIME: ${date}</div>`);
                         }
                     }).addTo(map);
                 });
